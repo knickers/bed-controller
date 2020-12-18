@@ -1,5 +1,5 @@
-#include "AnalogSmoother.h"
 #include "Particle.h"
+#include "AnalogSmoother.h"
 
 enum STATE {
 	OFF,
