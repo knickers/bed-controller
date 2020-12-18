@@ -28,6 +28,7 @@ module head_dynamic() {
 	x = 15;
 	y = 15;
 	d = 30;
+	r = 3.5;
 
 	// Clip
 	difference() {
@@ -39,12 +40,25 @@ module head_dynamic() {
 	// Pot shaft plate
 	translate([0, P-d, -7]) {
 		difference() {
-			translate([0, -5, -5])
-				cube([P, 3+d+y, 12+P]); // Main plate
+			translate([0, -r-P, -r-P])
+				cube([P, r+d+y, 12+P]); // Main plate
 
 			translate([-1, 0, 0])
-				rotate(90, [0,1,0])
-					#cylinder(d=6, h=P+2); // Center hole
+				rotate(90, [0,1,0]) {
+					cylinder(r=r, h=P+2); // Center hole
+
+					/*
+					difference() { // Corner rounder
+						translate([-10, -10, 0])
+							cube([16, 10, P+2]);
+						translate([0, 0, -2])
+							cylinder(r=r+P, h=P+4);
+					}
+
+					translate([-r-r-P-P, -1, 0])
+						cube([r+P, d-P+1, P+2]); // Flatten top
+					*/
+				}
 		}
 	}
 }
