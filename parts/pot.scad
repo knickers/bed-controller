@@ -5,6 +5,8 @@ T2 = T / 2; // Half of the part tolerance
 S  = 4;     // Steel thickness
 P  = 2 + 0; // Perimeter wall thickness
 
+$fn = 16;
+
 
 /***************************************
  *  Layout all the parts for printing  *
@@ -28,7 +30,7 @@ module head_dynamic() {
 	x = 15;
 	y = 15;
 	d = 30;
-	r = 3.5;
+	r = 4;
 
 	// Clip
 	difference() {
@@ -40,12 +42,19 @@ module head_dynamic() {
 	// Pot shaft plate
 	translate([0, P-d, -7]) {
 		difference() {
-			translate([0, -r-P, -r-P])
-				cube([P, r+d+y, 12+P]); // Main plate
+			union() {
+				translate([0, r-1, -r-P])
+					cube([P, d+y-r-P+1, 12+P]); // Main plate
+				rotate(90, [0,1,0])
+					cylinder(r=r+P, h=P*2); // Flex clip
+			}
 
 			translate([-1, 0, 0])
 				rotate(90, [0,1,0]) {
-					cylinder(r=r, h=P+2); // Center hole
+					cylinder(r=r, h=P*2+2); // Center hole
+
+					translate([-r-r-1, r-1, 0])
+						cube([r+r+1, 1, P*2+2]); // Flex cutout
 
 					/*
 					difference() { // Corner rounder
