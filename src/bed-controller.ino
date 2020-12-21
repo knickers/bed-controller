@@ -15,12 +15,14 @@ struct BED {
 	int maxAngle;
 	int mapLow;
 	int mapHigh;
+	float lastReading;
+	float tolerance;
 	STATE state;
 	AnalogSmoother pot;
 };
 
-struct BED head = {A0, 1, 2, 0, 50, 0, 270, OFF, AnalogSmoother(A0, 10)};
-struct BED foot = {A1, 3, 4, 0, 45, 0, 270, OFF, AnalogSmoother(A1, 10)};
+struct BED head = {A0, 1, 2, 0, 50, 0, 270, 0, 5, OFF, AnalogSmoother(A0, 10)};
+struct BED foot = {A1, 3, 4, 0, 45, 0, 270, 0, 5, OFF, AnalogSmoother(A1, 10)};
 
 void setup() {
 	Particle.function("headAngle", setHeadAngle);
@@ -40,38 +42,55 @@ void setup() {
 	head.pot.fill();
 	foot.pot.fill();
 
+	head.lastReading = head.pot.read();
+	foot.lastReading = foot.pot.read();
+
 	RGB.control(true);
 	RGB.brightness(0); // 0 - 255
 	RGB.control(false);
 }
 
-int readAngle(BED bed) {
-	return map(
-		(int)round(bed.pot.read()),
-		0, 1024,
-		bed.mapLow, bed.mapHigh
-	);
+int getAngle(float value, int mapLow, int mapHigh) {
+	return map((int)round(value), 0, 1024, mapLow, mapHigh);
 }
 
-void checkAngle(BED bed) {
+void turnOff(BED &bed) {
+	bed.state = OFF;
+	// Turn switches off
+	digitalWrite(bed.upPin, LOW);
+	digitalWrite(bed.downPin, LOW);
+}
+
+void checkAngle(BED &bed) {
 	if (bed.state == OFF) {
 		return;
 	}
 
-	int angle = readAngle(bed);
+	float value = bed.pot.read();
+	int angle = getAngle(value, bed.mapLow, bed.mapHigh);
 
 	if (bed.state == RAISING) {
+		// If the bed has reached it's target
 		if (angle >= bed.targetAngle) {
-			// Turn off the up switch
-			digitalWrite(bed.upPin, LOW);
+			turnOff(bed);
+		}
+		// If the bed hasn't moved since last time
+		if (value <= bed.lastReading + bed.tolerance) {
+			turnOff(bed);
 		}
 	}
 	else if (bed.state == LOWERING) {
+		// If the bed has reached it's target
 		if (angle <= bed.targetAngle) {
-			// Turn off the down switch
-			digitalWrite(bed.downPin, LOW);
+			turnOff(bed);
+		}
+		// If the bed hasn't moved since last time
+		if (value >= bed.lastReading - bed.tolerance) {
+			turnOff(bed);
 		}
 	}
+
+	bed.lastReading = value;
 }
 
 void loop() {
@@ -81,6 +100,8 @@ void loop() {
 
 int setAngle(String angle, BED &bed) {
 	Serial.printlnf("%d Set angle %s", (int)Time.now(), angle.c_str());
+
+	turnOff(bed);
 
 	bed.targetAngle = angle.toInt();
 	int currentAngle = readAngle(bed);
