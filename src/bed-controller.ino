@@ -21,10 +21,12 @@ struct BED {
 	AnalogSmoother pot;
 };
 
-struct BED head = {A0, 1, 2, 0, 50, 0, 270, 0, 5, OFF, AnalogSmoother(A0, 10)};
+struct BED head = {A0, 9, 2, 0, 50, 0, 270, 0, 5, OFF, AnalogSmoother(A0, 10)};
 struct BED foot = {A1, 3, 4, 0, 45, 0, 270, 0, 5, OFF, AnalogSmoother(A1, 10)};
 
 void setup() {
+	Particle.function("headState", setHeadState);
+	Particle.function("footState", setFootState);
 	Particle.function("headAngle", setHeadAngle);
 	Particle.function("footAngle", setFootAngle);
 	Particle.variable("headAngle", getHeadAngle);
@@ -53,6 +55,9 @@ void setup() {
 int getAngle(float value, int mapLow, int mapHigh) {
 	return map((int)round(value), 0, 1024, mapLow, mapHigh);
 }
+int readAngle(BED &bed) {
+	return getAngle(bed.pot.read(), bed.mapLow, bed.mapHigh);
+}
 
 void turnOff(BED &bed) {
 	bed.state = OFF;
@@ -76,7 +81,7 @@ void checkAngle(BED &bed) {
 		}
 		// If the bed hasn't moved since last time
 		if (value <= bed.lastReading + bed.tolerance) {
-			turnOff(bed);
+			//turnOff(bed);
 		}
 	}
 	else if (bed.state == LOWERING) {
@@ -86,7 +91,7 @@ void checkAngle(BED &bed) {
 		}
 		// If the bed hasn't moved since last time
 		if (value >= bed.lastReading - bed.tolerance) {
-			turnOff(bed);
+			//turnOff(bed);
 		}
 	}
 
@@ -138,6 +143,36 @@ int getHeadAngle() {
 }
 int getFootAngle() {
 	return readAngle(foot);
+}
+
+int setState(String state, BED &bed) {
+	state.toLowerCase();
+
+	if (state == "OFF") {
+		bed.state = OFF;
+		digitalWrite(bed.upPin, LOW);
+		digitalWrite(bed.downPin, LOW);
+	}
+	else if (state == "raise") {
+		bed.state = RAISING;
+		digitalWrite(bed.upPin, HIGH); // Turn on the up switch
+		digitalWrite(bed.downPin, LOW);
+	}
+	else if (state == "lower") {
+		bed.state = LOWERING;
+		digitalWrite(bed.upPin, LOW);
+		digitalWrite(bed.downPin, HIGH); // Turn on the down switch
+	}
+
+	return bed.state;
+}
+int setHeadState(String state) {
+	Serial.printlnf("%d Set head state %s", (int)Time.now(), state.c_str());
+	return setState(state, head);
+}
+int setFootState(String state) {
+	Serial.printlnf("%d Set foot state %s", (int)Time.now(), state.c_str());
+	return setState(state, foot);
 }
 
 void publish(String event, String data) {
