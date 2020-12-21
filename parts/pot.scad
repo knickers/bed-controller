@@ -13,11 +13,11 @@ $fn = 16;
  ***************************************
  */
 
-/* */
+/* * /
 head_dynamic();
 /* */
 
-/* * /
+/* */
 head_static();
 /* */
 
@@ -30,7 +30,7 @@ module head_dynamic() {
 	x = 15;
 	y = 15;
 	d = 30;
-	r = 4;
+	r = 3;
 
 	// Clip
 	difference() {
@@ -53,8 +53,8 @@ module head_dynamic() {
 				rotate(90, [0,1,0]) {
 					cylinder(r=r, h=P*2+2); // Center hole
 
-					translate([-r-r-1, r-1, 0])
-						cube([r+r+1, 1, P*2+2]); // Flex cutout
+					translate([-12-1, r-1, 0])
+						cube([12+1, 1, P*2+2]); // Flex cutout
 
 					/*
 					difference() { // Corner rounder
@@ -76,6 +76,7 @@ module head_static() {
 	x = 10;
 	y = 20;
 	d = 15;
+	dowelLength = 16;
 
 	// Clip
 	difference() {
@@ -97,7 +98,7 @@ module head_static() {
 
 			translate([-1, 0, 0])
 				rotate(90, [0,1,0])
-					cylinder(d=8, h=P+2); // Center hole
+					cylinder(d=7.5, h=P+2); // Center hole
 
 			translate([-1 , -1-12, -1.5])
 				cube([P+2, 2+1, 3]); // Key notch
