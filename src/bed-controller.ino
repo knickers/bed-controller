@@ -22,30 +22,32 @@ struct BED {
 };
 
 struct BED head = {A0, 9, 2, 0, 50, 0, 270, 0, 5, OFF, AnalogSmoother(A0, 10)};
-struct BED foot = {A1, 3, 4, 0, 45, 0, 270, 0, 5, OFF, AnalogSmoother(A1, 10)};
+struct BED feet = {A1, 3, 4, 0, 45, 0, 270, 0, 5, OFF, AnalogSmoother(A1, 10)};
 
 void setup() {
+	Particle.function("moveHead", moveHead);
+	Particle.function("moveFeet", moveFeet);
 	Particle.function("headState", setHeadState);
-	Particle.function("footState", setFootState);
+	Particle.function("feetState", setFeetState);
 	Particle.function("headAngle", setHeadAngle);
-	Particle.function("footAngle", setFootAngle);
+	Particle.function("feetAngle", setFeetAngle);
 	Particle.variable("headAngle", getHeadAngle);
-	Particle.variable("footAngle", getFootAngle);
+	Particle.variable("feetAngle", getFeetAngle);
 
 	Serial.begin(115200);
 
 	pinMode(head.potPin,  INPUT);
-	pinMode(foot.potPin,  INPUT);
+	pinMode(feet.potPin,  INPUT);
 	pinMode(head.upPin,   OUTPUT);
-	pinMode(foot.upPin,   OUTPUT);
+	pinMode(feet.upPin,   OUTPUT);
 	pinMode(head.downPin, OUTPUT);
-	pinMode(foot.downPin, OUTPUT);
+	pinMode(feet.downPin, OUTPUT);
 
 	head.pot.fill();
-	foot.pot.fill();
+	feet.pot.fill();
 
 	head.lastReading = head.pot.read();
-	foot.lastReading = foot.pot.read();
+	feet.lastReading = feet.pot.read();
 
 	RGB.control(true);
 	RGB.brightness(0); // 0 - 255
@@ -100,7 +102,7 @@ void checkAngle(BED &bed) {
 
 void loop() {
 	checkAngle(head);
-	checkAngle(foot);
+	checkAngle(feet);
 }
 
 int setAngle(String angle, BED &bed) {
@@ -134,15 +136,15 @@ int setAngle(String angle, BED &bed) {
 int setHeadAngle(String angle) {
 	return setAngle(angle, head);
 }
-int setFootAngle(String angle) {
-	return setAngle(angle, foot);
+int setFeetAngle(String angle) {
+	return setAngle(angle, feet);
 }
 
 int getHeadAngle() {
 	return readAngle(head);
 }
-int getFootAngle() {
-	return readAngle(foot);
+int getFeetAngle() {
+	return readAngle(feet);
 }
 
 int setState(String state, BED &bed) {
@@ -170,9 +172,9 @@ int setHeadState(String state) {
 	Serial.printlnf("%d Set head state %s", (int)Time.now(), state.c_str());
 	return setState(state, head);
 }
-int setFootState(String state) {
-	Serial.printlnf("%d Set foot state %s", (int)Time.now(), state.c_str());
-	return setState(state, foot);
+int setFeetState(String state) {
+	Serial.printlnf("%d Set feet state %s", (int)Time.now(), state.c_str());
+	return setState(state, feet);
 }
 
 void publish(String event, String data) {
