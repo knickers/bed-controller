@@ -88,7 +88,7 @@ int move(String cmd, BedJoint &bed) {
 	down by X degrees
 	*/
 
-	// REGEX: /^(up|down|to)\s*(by)?\s*(\d+)?\s*()?$/
+	// REGEX: /^(\w+)\s*b?y?\s*(\d*)\s*([\w ]*)$/
 
 	cmd.trim();
 	cmd.toLowerCase();
