@@ -77,28 +77,33 @@ int move(String cmd, BedJoint &bed) {
 
 	// REGEX: /^(up|down|to)\s*(by)?\s*(\d+)?\s*()?$/
 
-	cmd.trim().toLowerCase();
+	cmd.trim();
+	cmd.toLowerCase();
 
 	bool endsWithDegrees = cmd.endsWith("degrees");
 	if (endsWithDegrees) {
-		cmd = cmd.substring(0, cmd.length()-7).trim();
+		cmd = cmd.substring(0, cmd.length()-7);
+		cmd.trim();
 	}
 
 	if (cmd.startsWith("to")) {
-		cmd = cmd.substring(2).trim();
+		cmd = cmd.substring(2);
+		cmd.trim();
 
-		if (endsWithDegrees) {
-			return bed.setAngle(cmd.toInt());
-		}
-		else if (cmd == "tv") {
+		if (cmd == "tv") {
 			return bed.setAngle(ANGLE_TV);
+		}
+		else { // if (endsWithDegrees) {
+			return bed.setAngle(cmd.toInt());
 		}
 	}
 	else if (cmd.startsWith("up")) {
-		cmd = cmd.substring(2).trim();
+		cmd = cmd.substring(2);
+		cmd.trim();
 
 		if (cmd.startsWith("by")) {
-			cmd = cmd.substring(2).trim();
+			cmd = cmd.substring(2);
+			cmd.trim();
 		}
 
 		if (cmd == "") {
@@ -109,10 +114,12 @@ int move(String cmd, BedJoint &bed) {
 		}
 	}
 	else if (cmd.startsWith("down")) {
-		cmd = cmd.substring(4).trim();
+		cmd = cmd.substring(4);
+		cmd.trim();
 
 		if (cmd.startsWith("by")) {
-			cmd = cmd.substring(2).trim();
+			cmd = cmd.substring(2);
+			cmd.trim();
 		}
 
 		if (cmd == "") {
