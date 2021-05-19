@@ -56,8 +56,8 @@ void BedJoint::update() {
 
 	if (state == RAISING) {
 		// If the bed has reached it's target
-		if (angle >= targetAngle) {
-			turnOff(bed);
+		if (angle >= targetAngle || angle >= maxAngle) {
+			turnOff();
 		}
 		// If the bed hasn't moved since last time
 		if (reading <= lastReading + tolerance) {
@@ -66,7 +66,7 @@ void BedJoint::update() {
 	}
 	else if (state == LOWERING) {
 		// If the bed has reached it's target
-		if (angle <= targetAngle) {
+		if (angle <= targetAngle || angle <= 0) {
 			turnOff(bed);
 		}
 		// If the bed hasn't moved since last time
