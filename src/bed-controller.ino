@@ -33,16 +33,29 @@ void loop() {
 }
 
 int setHeadAngle(String angle) {
+	Serial.printlnf("%d Set head angle: %s", (int)Time.now(), state.c_str());
 	return head.setAngle(angle.toInt());
 }
 int setFeetAngle(String angle) {
+	Serial.printlnf("%d Set feet angle: %s", (int)Time.now(), state.c_str());
 	return feet.setAngle(angle.toInt());
 }
 
+int addHeadAngle(String angle) {
+	Serial.printlnf("%d Add head angle %s", (int)Time.now(), state.c_str());
+	return head.addAngle(angle.toInt());
+}
+int addFeetAngle(String angle) {
+	Serial.printlnf("%d Add feet angle %s", (int)Time.now(), state.c_str());
+	return feet.addAngle(angle.toInt());
+}
+
 int getHeadAngle() {
+	Serial.printlnf("%d Get head angle %s", (int)Time.now(), state.c_str());
 	return head.currentAngle();
 }
 int getFeetAngle() {
+	Serial.printlnf("%d Get feet angle %s", (int)Time.now(), state.c_str());
 	return feet.currentAngle();
 }
 
