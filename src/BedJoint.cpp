@@ -1,21 +1,21 @@
 #include "BedJoint.h"
 
-BedJoint::BedJoint(int potPin, int up, int down) {
-	upPin = up;
-	downPin = down;
-	targetAngle = 0;
-	maxAngle = 60;
-	mapLow = 0;
-	mapHigh = 270;
-	lastReading = 0;
-	tolerance = 5;
-	state = OFF;
+BedJoint::BedJoint(int sensorPin, int upPin, int downPin) {
+	_pinUp   = upPin;
+	_pinDown = downPin;
+	_angleTarget = 0;
+	_angleMax    = 60;
+	_mapLow  = 0;
+	_mapHigh = 270;
+	_lastReading = 0;
+	_tolerance = 5;
+	_state = OFF;
 
-	pinMode(potPin,  INPUT);
-	pinMode(upPin,   OUTPUT);
-	pinMode(downPin, OUTPUT);
+	pinMode(sensorPin,  INPUT);
+	pinMode(_pinUp,   OUTPUT);
+	pinMode(_pinDown, OUTPUT);
 
-	pot = AnalogSmoother(potPin, 10);
+	_sensor = AnalogSmoother(sensorPin, 10);
 }
 
 BedJoint::~BedJoint() {
@@ -23,59 +23,59 @@ BedJoint::~BedJoint() {
 }
 
 void BedJoint::init() {
-	pot.fill();
-	lastReading = pot.read();
+	_sensor.fill();
+	_lastReading = _sensor.read();
 }
 
 float BedJoint::read() {
-	pot.read();
+	_sensor.read();
 }
 
 int BedJoint::readingToAngle(float reading) {
-	return map((int)round(reading), 0, 1024, mapLow, mapHigh);
+	return map((int)round(reading), 0, 1024, _mapLow, _mapHigh);
 }
 
 int BedJoint::currentAngle() {
-	return readingToAngle(lastReading);
+	return readingToAngle(_lastReading);
 }
 
 void BedJoint::turnOff(BED &bed) {
-	state = OFF;
+	_state = OFF;
 	// Turn switches off
-	digitalWrite(upPin, LOW);
-	digitalWrite(downPin, LOW);
+	digitalWrite(_pinUp, LOW);
+	digitalWrite(_pinDown, LOW);
 }
 
 void BedJoint::update() {
-	if (state == OFF) {
+	if (_state == OFF) {
 		return;
 	}
 
-	float reading = pot.read();
+	float reading = _sensor.read();
 	int angle = currentAngle();
 
-	if (state == RAISING) {
+	if (_state == RAISING) {
 		// If the bed has reached it's target
-		if (angle >= targetAngle || angle >= maxAngle) {
+		if (angle >= _angleTarget || angle >= _angleMax) {
 			turnOff();
 		}
 		// If the bed hasn't moved since last time
-		if (reading <= lastReading + tolerance) {
+		if (reading <= _lastReading + _tolerance) {
 			//turnOff(bed);
 		}
 	}
-	else if (state == LOWERING) {
+	else if (_state == LOWERING) {
 		// If the bed has reached it's target
-		if (angle <= targetAngle || angle <= 0) {
+		if (angle <= _angleTarget || angle <= 0) {
 			turnOff(bed);
 		}
 		// If the bed hasn't moved since last time
-		if (reading >= lastReading - tolerance) {
+		if (reading >= _lastReading - _tolerance) {
 			//turnOff(bed);
 		}
 	}
 
-	lastReading = reading;
+	_lastReading = reading;
 }
 
 STATE BedJoint::setAngle(int angle) {
@@ -83,52 +83,53 @@ STATE BedJoint::setAngle(int angle) {
 
 	turnOff(bed);
 
-	targetAngle = angle;
+	_angleTarget = angle;
 	int currentAngle = readAngle();
 
-	if (targetAngle < 0) {
-		targetAngle = 0;
+	if (_angleTarget < 0) {
+		_angleTarget = 0;
 	}
-	else if (targetAngle > maxAngle) {
-		targetAngle = maxAngle;
+	else if (_angleTarget > _angleMax) {
+		_angleTarget = _angleMax;
 	}
 
-	if (targetAngle > currentAngle) {
-		state = RAISING;
+	if (_angleTarget > currentAngle) {
+		_state = RAISING;
 		// Turn on the up switch
-		digitalWrite(upPin, HIGH);
+		digitalWrite(_pinUp, HIGH);
 	}
-	else if (targetAngle < currentAngle) {
-		state = LOWERING;
+	else if (_angleTarget < currentAngle) {
+		_state = LOWERING;
 		// Turn on the down switch
-		digitalWrite(downPin, HIGH);
+		digitalWrite(_pinDown, HIGH);
 	}
 
-	return state;
+	return _state;
 }
 
 STATE BedJoint::addAngle(int angle) {
-	return setAngle(targetAngle + angle);
+	return setAngle(_angleTarget + angle);
 }
 
 STATE BedJoint::setState(String state) {
-	state.trim().toLowerCase();
+	state.trim();
+	state.toLowerCase();
 
 	if (state == "off") {
-		state = OFF;
-		digitalWrite(upPin, LOW);
-		digitalWrite(downPin, LOW);
+		_state = OFF;
+		digitalWrite(_pinUp, LOW);
+		digitalWrite(_pinDown, LOW);
 	}
 	else if (state == "raise") {
-		state = RAISING;
-		digitalWrite(upPin, HIGH); // Turn on the up switch
-		digitalWrite(downPin, LOW);
+		_state = RAISING;
+		digitalWrite(_pinUp, HIGH); // Turn on the up switch
+		digitalWrite(_pinDown, LOW);
 	}
 	else if (state == "lower") {
-		state = LOWERING;
-		digitalWrite(upPin, LOW);
-		digitalWrite(downPin, HIGH); // Turn on the down switch
+		_state = LOWERING;
+		digitalWrite(_pinUp, LOW);
+		digitalWrite(_pinDown, HIGH); // Turn on the down switch
 	}
 
-	return state;
+	return _state;
 }

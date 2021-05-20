@@ -11,8 +11,19 @@ enum STATE {
 };
 
 class BedJoint {
+	private:
+		int _pinUp;
+		int _pinDown;
+		int _angleTarget;
+		int _angleMax;
+		int _mapLow;
+		int _mapHigh;
+		float _lastReading;
+		float _tolerance;
+		STATE _state;
+		AnalogSmoother _sensor;
 	public:
-		BedJoint(int potPin, int up, int down);
+		BedJoint(int sensorPin, int upPin, int downPin);
 		~BedJoint();
 		void init();
 		int  readingToAngle();
@@ -22,17 +33,6 @@ class BedJoint {
 		STATE setAngle(int angle);
 		STATE addAngle(int angle);
 		STATE setState(String state);
-	private:
-		int upPin;
-		int downPin;
-		int targetAngle;
-		int maxAngle;
-		int mapLow;
-		int mapHigh;
-		float lastReading;
-		float tolerance;
-		STATE state;
-		AnalogSmoother pot;
 };
 
 #endif
