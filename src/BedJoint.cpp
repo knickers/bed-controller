@@ -13,7 +13,7 @@ BedJoint::BedJoint(int sensorPin, int upPin, int downPin) {
 	_tolerance   = 5;
 	_state       = OFF;
 
-	pinMode(sensorPin,  INPUT);
+	pinMode(sensorPin, INPUT);
 	pinMode(_pinUp,   OUTPUT);
 	pinMode(_pinDown, OUTPUT);
 

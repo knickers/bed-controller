@@ -10,14 +10,12 @@ int ANGLE_TV = 10;
 void setup() {
 	Particle.function("moveHead", moveHead);
 	Particle.function("moveFeet", moveFeet);
-	/*
 	Particle.function("headState", setHeadState);
 	Particle.function("feetState", setFeetState);
 	Particle.function("headAngle", setHeadAngle);
 	Particle.function("feetAngle", setFeetAngle);
 	Particle.variable("headAngle", getHeadAngle);
 	Particle.variable("feetAngle", getFeetAngle);
-	*/
 
 	Serial.begin(115200);
 
