@@ -5,41 +5,50 @@ BedJoint::BedJoint(int sensorPin, int upPin, int downPin) {
 	_pinDown = downPin;
 	_angleTarget = 0;
 	_angleMax    = 60;
-	_mapLow  = 0;
-	_mapHigh = 270;
+	_mapFromMin  = 0;
+	_mapFromMax  = 1024;
+	_mapToMin    = 0;
+	_mapToMax    = 270;
 	_lastReading = 0;
-	_tolerance = 5;
-	_state = OFF;
+	_tolerance   = 5;
+	_state       = OFF;
 
 	pinMode(sensorPin,  INPUT);
 	pinMode(_pinUp,   OUTPUT);
 	pinMode(_pinDown, OUTPUT);
 
-	_sensor = AnalogSmoother(sensorPin, 10);
+	_sensor = new AnalogSmoother(sensorPin, 10);
 }
 
 BedJoint::~BedJoint() {
-	// TODO do I need to call AnalogSmoother destructor?
+	delete _sensor;
 }
 
 void BedJoint::init() {
-	_sensor.fill();
-	_lastReading = _sensor.read();
+	_sensor->fill();
+	_lastReading = _sensor->read();
 }
 
-float BedJoint::read() {
-	_sensor.read();
+void BedJoint::setMapping(int fromMin, int fromMax, int toMin, int toMax) {
+	_mapFromMin = fromMin;
+	_mapFromMax = fromMax;
+	_mapToMin   = toMin;
+	_mapToMax   = toMax;
 }
 
 int BedJoint::readingToAngle(float reading) {
-	return map((int)round(reading), 0, 1024, _mapLow, _mapHigh);
+	// Mega: 5V    // Mega: 3V3  // Argon
+	// Min : 155   // Min : 150  // Min : 
+	// None: 516   // None: 340  // None: 
+	// Max : 888   // Max : 530  // Max : 
+	return map((int)round(reading), _mapFromMin, _mapFromMax, _mapToMin, _mapToMax);
 }
 
 int BedJoint::currentAngle() {
 	return readingToAngle(_lastReading);
 }
 
-void BedJoint::turnOff(BED &bed) {
+void BedJoint::turnOff() {
 	_state = OFF;
 	// Turn switches off
 	digitalWrite(_pinUp, LOW);
@@ -51,7 +60,7 @@ void BedJoint::update() {
 		return;
 	}
 
-	float reading = _sensor.read();
+	float reading = _sensor->read();
 	int angle = currentAngle();
 
 	if (_state == RAISING) {
@@ -61,17 +70,17 @@ void BedJoint::update() {
 		}
 		// If the bed hasn't moved since last time
 		if (reading <= _lastReading + _tolerance) {
-			//turnOff(bed);
+			//turnOff();
 		}
 	}
 	else if (_state == LOWERING) {
 		// If the bed has reached it's target
 		if (angle <= _angleTarget || angle <= 0) {
-			turnOff(bed);
+			turnOff();
 		}
 		// If the bed hasn't moved since last time
 		if (reading >= _lastReading - _tolerance) {
-			//turnOff(bed);
+			//turnOff();
 		}
 	}
 
@@ -79,12 +88,10 @@ void BedJoint::update() {
 }
 
 STATE BedJoint::setAngle(int angle) {
-	Serial.printlnf("%d Set angle to: %s", (int)Time.now(), angle.c_str());
-
-	turnOff(bed);
+	turnOff();
 
 	_angleTarget = angle;
-	int currentAngle = readAngle();
+	int current = currentAngle();
 
 	if (_angleTarget < 0) {
 		_angleTarget = 0;
@@ -93,12 +100,12 @@ STATE BedJoint::setAngle(int angle) {
 		_angleTarget = _angleMax;
 	}
 
-	if (_angleTarget > currentAngle) {
+	if (_angleTarget > current) {
 		_state = RAISING;
 		// Turn on the up switch
 		digitalWrite(_pinUp, HIGH);
 	}
-	else if (_angleTarget < currentAngle) {
+	else if (_angleTarget < current) {
 		_state = LOWERING;
 		// Turn on the down switch
 		digitalWrite(_pinDown, HIGH);

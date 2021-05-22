@@ -16,17 +16,20 @@ class BedJoint {
 		int _pinDown;
 		int _angleTarget;
 		int _angleMax;
-		int _mapLow;
-		int _mapHigh;
+		int _mapFromMin;
+		int _mapFromMax;
+		int _mapToMin;
+		int _mapToMax;
 		float _lastReading;
 		float _tolerance;
 		STATE _state;
-		AnalogSmoother _sensor;
+		AnalogSmoother *_sensor;
 	public:
 		BedJoint(int sensorPin, int upPin, int downPin);
 		~BedJoint();
 		void init();
-		int  readingToAngle();
+		void setMapping(int fromMin, int fromMax, int toMin, int toMax);
+		int  readingToAngle(float reading);
 		int  currentAngle();
 		void turnOff();
 		void update();

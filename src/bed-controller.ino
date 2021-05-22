@@ -1,5 +1,5 @@
 #include "Particle.h"
-#include "AnalogSmoother.h"
+#include <BedJoint.h>
 
 BedJoint head(A0, 9, 2);
 BedJoint feet(A1, 3, 4);
@@ -10,17 +10,22 @@ int ANGLE_TV = 10;
 void setup() {
 	Particle.function("moveHead", moveHead);
 	Particle.function("moveFeet", moveFeet);
+	/*
 	Particle.function("headState", setHeadState);
 	Particle.function("feetState", setFeetState);
 	Particle.function("headAngle", setHeadAngle);
 	Particle.function("feetAngle", setFeetAngle);
 	Particle.variable("headAngle", getHeadAngle);
 	Particle.variable("feetAngle", getFeetAngle);
+	*/
 
 	Serial.begin(115200);
 
 	head.init();
 	feet.init();
+
+	head.setMapping(150, 530, 0, 60);
+	feet.setMapping(150, 530, 0, 45);
 
 	RGB.control(true);
 	RGB.brightness(0); // 0 - 255
@@ -30,42 +35,6 @@ void setup() {
 void loop() {
 	head.update();
 	feet.update();
-}
-
-int setHeadAngle(String angle) {
-	Serial.printlnf("%d Set head angle: %s", (int)Time.now(), state.c_str());
-	return head.setAngle(angle.toInt());
-}
-int setFeetAngle(String angle) {
-	Serial.printlnf("%d Set feet angle: %s", (int)Time.now(), state.c_str());
-	return feet.setAngle(angle.toInt());
-}
-
-int addHeadAngle(String angle) {
-	Serial.printlnf("%d Add head angle %s", (int)Time.now(), state.c_str());
-	return head.addAngle(angle.toInt());
-}
-int addFeetAngle(String angle) {
-	Serial.printlnf("%d Add feet angle %s", (int)Time.now(), state.c_str());
-	return feet.addAngle(angle.toInt());
-}
-
-int getHeadAngle() {
-	Serial.printlnf("%d Get head angle %s", (int)Time.now(), state.c_str());
-	return head.currentAngle();
-}
-int getFeetAngle() {
-	Serial.printlnf("%d Get feet angle %s", (int)Time.now(), state.c_str());
-	return feet.currentAngle();
-}
-
-int setHeadState(String state) {
-	Serial.printlnf("%d Set head state %s", (int)Time.now(), state.c_str());
-	return head.setState(state);
-}
-int setFeetState(String state) {
-	Serial.printlnf("%d Set feet state %s", (int)Time.now(), state.c_str());
-	return feet.setState(state);
 }
 
 int move(String cmd, BedJoint &bed) {
@@ -147,10 +116,48 @@ int move(String cmd, BedJoint &bed) {
 	return bed.setAngle(0);
 }
 int moveHead(String cmd) {
+	Serial.printlnf("%d Move head: %s", (int)Time.now(), cmd.c_str());
 	return move(cmd, head);
 }
 int moveFeet(String cmd) {
+	Serial.printlnf("%d Move feet: %s", (int)Time.now(), cmd.c_str());
 	return move(cmd, feet);
+}
+
+int setHeadAngle(String angle) {
+	Serial.printlnf("%d Set head angle: %s", (int)Time.now(), angle.c_str());
+	return head.setAngle(angle.toInt());
+}
+int setFeetAngle(String angle) {
+	Serial.printlnf("%d Set feet angle: %s", (int)Time.now(), angle.c_str());
+	return feet.setAngle(angle.toInt());
+}
+
+int addHeadAngle(String angle) {
+	Serial.printlnf("%d Add head angle %s", (int)Time.now(), angle.c_str());
+	return head.addAngle(angle.toInt());
+}
+int addFeetAngle(String angle) {
+	Serial.printlnf("%d Add feet angle %s", (int)Time.now(), angle.c_str());
+	return feet.addAngle(angle.toInt());
+}
+
+int getHeadAngle() {
+	Serial.printlnf("%d Get head angle %s", (int)Time.now());
+	return head.currentAngle();
+}
+int getFeetAngle() {
+	Serial.printlnf("%d Get feet angle %s", (int)Time.now());
+	return feet.currentAngle();
+}
+
+int setHeadState(String state) {
+	Serial.printlnf("%d Set head state %s", (int)Time.now(), state.c_str());
+	return head.setState(state);
+}
+int setFeetState(String state) {
+	Serial.printlnf("%d Set feet state %s", (int)Time.now(), state.c_str());
+	return feet.setState(state);
 }
 
 void publish(String event, String data) {
