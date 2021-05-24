@@ -1,8 +1,8 @@
 #include "Particle.h"
 #include <BedJoint.h>
 
-BedJoint head(A0, 9, 2);
-BedJoint feet(A1, 3, 4);
+BedJoint head(A0, 0, 2, 1);
+BedJoint feet(A1, 4, 6, 5);
 
 int ANGLE_UP = 10;
 int ANGLE_TV = 10;

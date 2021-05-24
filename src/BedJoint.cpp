@@ -1,8 +1,9 @@
 #include "BedJoint.h"
 
-BedJoint::BedJoint(int sensorPin, int upPin, int downPin) {
-	_pinUp   = upPin;
-	_pinDown = downPin;
+BedJoint::BedJoint(int sensorPin, int upPin, int downPin, int buttonPin) {
+	_pinUp       = upPin;
+	_pinDown     = downPin;
+	_pinButton   = buttonPin;
 	_angleTarget = 0;
 	_angleMax    = 60;
 	_mapFromMin  = 0;
@@ -13,9 +14,10 @@ BedJoint::BedJoint(int sensorPin, int upPin, int downPin) {
 	_tolerance   = 5;
 	_state       = OFF;
 
-	pinMode(sensorPin, INPUT);
-	pinMode(_pinUp,   OUTPUT);
-	pinMode(_pinDown, OUTPUT);
+	pinMode(_pinUp,    OUTPUT);
+	pinMode(_pinDown,  OUTPUT);
+	pinMode(_pinButton, INPUT_PULLDOWN);
+	pinMode(sensorPin,  INPUT);
 
 	_sensor = new AnalogSmoother(sensorPin, 10);
 }
@@ -68,20 +70,32 @@ void BedJoint::update() {
 		if (angle >= _angleTarget || angle >= _angleMax) {
 			turnOff();
 		}
+
 		// If the bed hasn't moved since last time
+		/*
 		if (reading <= _lastReading + _tolerance) {
-			//turnOff();
+			turnOff();
 		}
+		*/
 	}
 	else if (_state == LOWERING) {
 		// If the bed has reached it's target
 		if (angle <= _angleTarget || angle <= 0) {
 			turnOff();
 		}
-		// If the bed hasn't moved since last time
-		if (reading >= _lastReading - _tolerance) {
-			//turnOff();
+
+		// If the endstop switch is triggered
+		if (digitalRead(_pinButton) == HIGH) {
+			turnOff();
+			// update mapping values to new zero
 		}
+
+		// If the bed hasn't moved since last time
+		/*
+		if (reading >= _lastReading - _tolerance) {
+			turnOff();
+		}
+		*/
 	}
 
 	_lastReading = reading;

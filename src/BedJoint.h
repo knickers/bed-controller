@@ -1,7 +1,6 @@
 #ifndef BedJoint_h
 #define BedJoint_h
 
-#include "Particle.h"
 #include "AnalogSmoother.h"
 
 enum STATE {
@@ -14,6 +13,7 @@ class BedJoint {
 	private:
 		int _pinUp;
 		int _pinDown;
+		int _pinButton;
 		int _angleTarget;
 		int _angleMax;
 		int _mapFromMin;
@@ -25,7 +25,7 @@ class BedJoint {
 		STATE _state;
 		AnalogSmoother *_sensor;
 	public:
-		BedJoint(int sensorPin, int upPin, int downPin);
+		BedJoint(int sensorPin, int upPin, int downPin, int buttonPin);
 		~BedJoint();
 		void init();
 		void setMapping(int fromMin, int fromMax, int toMin, int toMax);
