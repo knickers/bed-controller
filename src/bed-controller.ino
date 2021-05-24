@@ -165,7 +165,7 @@ int setFeetState(String state) {
 
 void publish(String event, String data) {
 	if (Serial.isConnected()) {
-		Serial.printlnf("%d %s", (int)Time.now(), data.c_str());
+		Serial.printlnf("%d %s: %s", (int)Time.now(), event.c_str(), data.c_str());
 	}
 	if (Particle.connected()) {
 		Particle.publish(event, data, PRIVATE);
