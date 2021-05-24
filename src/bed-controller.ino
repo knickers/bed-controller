@@ -65,6 +65,11 @@ int move(String cmd, BedJoint &bed) {
 		cmd = cmd.substring(0, cmd.length()-7);
 		cmd.trim();
 	}
+	else if (cmd.endsWith("°")) { // \u00B0 --- 2 bytes?
+		endsWithDegrees = true;
+		cmd = cmd.substring(0, cmd.length()-2);
+		cmd.trim();
+	}
 
 	if (cmd.startsWith("to")) {
 		cmd = cmd.substring(2);
