@@ -2,6 +2,7 @@
 #define BedJoint_h
 
 #include "AnalogSmoother.h"
+#include "Debounce.h"
 
 enum STATE {
 	OFF,
@@ -23,7 +24,8 @@ class BedJoint {
 		float _lastReading;
 		float _tolerance;
 		STATE _state;
-		AnalogSmoother *_sensor;
+		AnalogSmoother* _sensor;
+		Debounce* _endstop;
 	public:
 		BedJoint(int sensorPin, int upPin, int downPin, int buttonPin);
 		~BedJoint();

@@ -3,7 +3,6 @@
 BedJoint::BedJoint(int sensorPin, int upPin, int downPin, int buttonPin) {
 	_pinUp       = upPin;
 	_pinDown     = downPin;
-	_pinButton   = buttonPin;
 	_angleTarget = 0;
 	_angleMax    = 60;
 	_mapFromMin  = 0;
@@ -16,14 +15,17 @@ BedJoint::BedJoint(int sensorPin, int upPin, int downPin, int buttonPin) {
 
 	pinMode(_pinUp,    OUTPUT);
 	pinMode(_pinDown,  OUTPUT);
-	pinMode(_pinButton, INPUT_PULLDOWN);
-	pinMode(sensorPin,  INPUT);
+	pinMode(buttonPin, INPUT_PULLDOWN);
+	pinMode(sensorPin, INPUT);
 
 	_sensor = new AnalogSmoother(sensorPin, 10);
+	_endstop = new Debounce();
+	_endstop->attach(buttonPin);
 }
 
 BedJoint::~BedJoint() {
 	delete _sensor;
+	delete _endstop;
 }
 
 void BedJoint::init(int fromMin, int fromMax, int toMin, int toMax) {
@@ -56,6 +58,8 @@ void BedJoint::turnOff() {
 }
 
 void BedJoint::update() {
+	_endstop->update();
+
 	if (_state == OFF) {
 		return;
 	}
@@ -83,7 +87,7 @@ void BedJoint::update() {
 		}
 
 		// If the endstop switch is triggered
-		if (digitalRead(_pinButton) == HIGH) {
+		if (_endstop->rose()) {
 			turnOff();
 			// update mapping values to new zero
 		}
