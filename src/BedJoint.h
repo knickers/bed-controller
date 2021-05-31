@@ -14,8 +14,8 @@ class BedJoint {
 		int _pinUp;
 		int _pinDown;
 		int _pinButton;
-		int _angleTarget;
 		int _angleMax;
+		int _angleTarget;
 		int _mapFromMin;
 		int _mapFromMax;
 		int _mapToMin;
@@ -27,8 +27,7 @@ class BedJoint {
 	public:
 		BedJoint(int sensorPin, int upPin, int downPin, int buttonPin);
 		~BedJoint();
-		void init();
-		void setMapping(int fromMin, int fromMax, int toMin, int toMax);
+		void init(int fromMin, int fromMax, int toMin, int toMax);
 		int  readingToAngle(float reading);
 		int  currentAngle();
 		void turnOff();
