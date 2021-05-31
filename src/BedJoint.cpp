@@ -26,12 +26,10 @@ BedJoint::~BedJoint() {
 	delete _sensor;
 }
 
-void BedJoint::init() {
+void BedJoint::init(int fromMin, int fromMax, int toMin, int toMax) {
 	_sensor->fill();
 	_lastReading = _sensor->read();
-}
 
-void BedJoint::setMapping(int fromMin, int fromMax, int toMin, int toMax) {
 	_mapFromMin = fromMin;
 	_mapFromMax = fromMax;
 	_mapToMin   = toMin;
