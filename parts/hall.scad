@@ -37,15 +37,24 @@ magnet_holder_new(3);
 module stationary_pivot() {
 	difference() {
 		union() {
-			cylinder(d=rivet+wall*2, h=height+wall+tolerance); // OD
-			cylinder(d=rivet+wall*4+tolerance*2, h=wall);      // Flange
-			translate([-radius-magnet, -wall*2, 0])
-				cube([radius, wall*4, wall]);                  // Sensor tab
-			translate([-radius-magnet, -wall*2, 0])
-				cube([wall, wall*4, height+wall-2]);           // Sensor tower
+			cylinder(d=rivet+wall*2, h=height+wall*2+tolerance*2); // OD
+			cylinder(d=rivet+wall*4+tolerance*2, h=wall*2);        // Flange
+			/*
+			translate([0, 0, height+wall+tolerance*2])
+				cylinder(d=rivet+wall*4+tolerance*2, h=wall);    // Upper Flange
+			*/
+			linear_extrude(wall)                                   // Sensor tab
+				polygon([
+					[-radius-magnet, 1], // Q2
+					[-radius-magnet, -1], // Q3
+					[-rivet/2-wall, -wall*3], // Q4
+					[-rivet/2-wall, wall*3] // Q1
+				]);
 		}
 		translate([0, 0, -1])
-			cylinder(d=rivet, h=height+wall+tolerance+2);      // ID
+			cylinder(d=rivet, h=height+wall*2+tolerance+2);      // ID
+		translate([-radius, -1.5, -1])
+			cube([1, 3, wall+2]);                                // Wire Cutout
 	}
 }
 
