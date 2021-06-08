@@ -221,11 +221,17 @@ void setup() {
 	_pos->addTransition([]() { return t_eq("cancel"); }, p_off);
 
 	_pos->addTransition(&t_all, _err);
+
+	Serial.println("Head Feet");
 }
 
 void loop() {
 	head.update();
 	feet.update();
+
+	Serial.print(head.lastReading());
+	Serial.print(" ");
+	Serial.println(feet.lastReading());
 }
 
 bool isNumeric(String str) {

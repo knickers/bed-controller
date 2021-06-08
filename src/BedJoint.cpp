@@ -65,7 +65,7 @@ void BedJoint::update() {
 	_endstop->update();
 
 	if (_state == OFF) {
-		return;
+		//return;
 	}
 
 	float reading = _sensor->read();
