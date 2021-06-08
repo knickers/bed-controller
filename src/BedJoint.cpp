@@ -40,8 +40,8 @@ void BedJoint::init(int fromMin, int fromMax, int toMin, int toMax) {
 
 int BedJoint::readingToAngle(float reading) {
 	// Mega: 5V    // Mega: 3V3  // Argon
-	// Min : 155   // Min : 150  // Min : 
-	// None: 516   // None: 340  // None: 
+	// Min : 155   // Min : 150  // Min : 1450
+	// None: 516   // None: 340  // None:
 	// Max : 888   // Max : 530  // Max : 
 	return map((int)round(reading), _mapFromMin, _mapFromMax, _mapToMin, _mapToMax);
 }
