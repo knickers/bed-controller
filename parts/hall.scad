@@ -9,6 +9,8 @@ radius = 16; // [10:0.5:20]
 // Part Height
 height = 5; // [1:1:20]
 tolerance = 0.2; // [0.05:0.05:0.5]
+// Magnet Thickness
+mag_thick = 3; // [1:0.5:5]
 // Magnet Diameter
 magnet = 8; // [1:1:20]
 // Distance Between Magnets
@@ -66,15 +68,11 @@ module rotating_pivot() {
 		translate([-r, -rivet/2-wall*2-tolerance, 0])
 			cube([r, wall, height]);                          // Lower arm
 
-	//magnet_holder(height+steel);
-	difference() {
-		magnet_holder_new(3+height);
-		translate([0, 0, -1])
-			cylinder(r=radius+magnet+wall/2, h=height+1);
-	}
+	magnet_holder();
 }
 
-module magnet_holder_new(H) {
+module magnet_holder() {
+	H = height + steel + wall + tolerance;
 	R = radius;         // Inner radius of arc
 	D = magnet+wall*2;  // Distance between IR and OR
 	r = R+D/2;          // Radius to center of arc
@@ -96,27 +94,10 @@ module magnet_holder_new(H) {
 
 		rotate(-a + A, [0,0,1])
 			translate([-r, 0, -1])
-				cylinder(d=magnet+tolerance, h=H+2);      // Upper magent
+				cylinder(d=magnet+tolerance, h=mag_thick+1);   // Upper magent
+
 		rotate(a + A, [0,0,1])
 			translate([-r, 0, -1])
-				cylinder(d=magnet+tolerance, h=H+2);      // Lower magent
-	}
-}
-
-module magnet_holder(H) {
-	intersection() {
-		difference() {
-			cylinder(r=radius+wall*2+magnet, h=H);  // OD
-			translate([0, 0, -1])
-				cylinder(r=radius+wall, h=H+2);     // ID
-			rotate(-20, [0,0,1])
-				translate([-radius-magnet/2-wall, 0, -1])
-					cylinder(d=magnet, h=H+2);      // Upper magent
-			rotate(20, [0,0,1])
-				translate([-radius-magnet/2-wall, 0, -1])
-					cylinder(d=magnet, h=H+2);      // Lower magent
-		}
-		translate([-rivet*1.5, -rivet/2-wall*2-tolerance, 0])
-			cube([rivet, rivet+wall*4+tolerance*2, H]);
+				cylinder(d=magnet+tolerance, h=mag_thick+1);   // Lower magent
 	}
 }
