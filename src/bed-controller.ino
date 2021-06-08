@@ -45,14 +45,15 @@ State* _up    = parser.addState([]() {
 	nextToken();
 
 	if (_token == "") {
-		_joint->setAngle(ANGLE_UP);
+		_joint->addAngle(ANGLE_UP);
 	}
 });
 State* _down = parser.addState([]() {
 	nextToken();
 
 	if (_token == "") {
-		_joint->setAngle(0);
+		feet.setAngle(0);
+		feet.setAngle(0);
 	}
 });
 State* _set = parser.addState([]() {
@@ -135,7 +136,7 @@ bool t_down() { return _token == "down"; }
 bool t_by()   { return _token == "by"; }
 bool t_the()  { return _token == "the"; }
 bool t_num()  { return isNumeric(_token); }
-bool t_all()  { return true; }
+bool t_all()  { return _token != ""; }
 bool t_deg()  { return _token == "degrees" || _token == "°"; } // \u00B0
 
 
@@ -208,8 +209,10 @@ void setup() {
 	_pos->addTransition([]() { return t_eq("lifting");     }, p_alltheway);
 	_pos->addTransition([]() { return t_eq("all the way"); }, p_alltheway);
 
-	_pos->addTransition([]() { return t_eq("halfway");  }, p_halfway);
-	_pos->addTransition([]() { return t_eq("half way"); }, p_halfway);
+	_pos->addTransition([]() { return t_eq("halfway");     }, p_halfway);
+	_pos->addTransition([]() { return t_eq("half way");    }, p_halfway);
+	_pos->addTransition([]() { return t_eq("halfway up");  }, p_halfway);
+	_pos->addTransition([]() { return t_eq("half way up"); }, p_halfway);
 
 	_pos->addTransition([]() { return t_eq("off");    }, p_off);
 	_pos->addTransition([]() { return t_eq("stop");   }, p_off);
