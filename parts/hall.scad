@@ -24,8 +24,8 @@ magnet = 8; // [1:1:20]
 // Distance Between Magnets
 distance = 16; // [10:1:20]
 
-magnet_r = radius + magnet/2 + wall;    // Radius to center of magnet arc
-magnet_a = asin(distance/magnet_r) / 2; // Angle between magnets
+magnet_r = radius + magnet/2 + wall;  // Radius to center of magnet arc
+magnet_a = asin(distance/2/magnet_r); // Angle between magnets
 
 // Resolution
 $fs = 2; // [1:High, 2:Medium, 4:Low]
@@ -92,8 +92,7 @@ module rotating_pivot() {
 
 	l = cos(magnet_a) * magnet_r;        // Horizontal Length at Support Arm
 	h = (distance+magnet)/2 + wall - or; // Vertical height at support arm
-	//a = atan(h / l);
-	a = 1;
+	a = atan(h / l);
 
 	rotate(-a, [0,0,1])
 		translate([-l, or-wall, 0])
