@@ -20,19 +20,21 @@ distance = 16; // [10:1:20]
 $fs = 2; // [1:High, 2:Medium, 4:Low]
 $fa = 0.01 + 0;
 
-translate([0, 0, -wall-tolerance])
-//translate([rivet*2, 0, 0])
-rotate(22, [0,0,1])
-	stationary_pivot();
-/*
-*/
+part = "comb"; // [comb:Combined, sep:Separated, static:Stationary, dyn:Rotator]
 
-translate([0, 0, 0])
-	rotating_pivot();
-/*
+if (part == "comb") {
+	translate([0, 0, -wall*2-tolerance])
+		rotate(22, [0,0,1])
+			color("red")
+				stationary_pivot();
 
-magnet_holder_new(3);
-*/
+	translate([0, 0, 0])
+		rotating_pivot();
+}
+else if (part == "sep") {
+	translate([rivet*2, 0, 0])
+		stationary_pivot();
+}
 
 module stationary_pivot() {
 	difference() {
