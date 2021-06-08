@@ -10,4 +10,6 @@ set -e
 #	exit
 #fi
 
-particle flash --usb firmware.bin
+#particle flash --usb firmware.bin
+
+particle flash splendid_pirate firmware.bin
