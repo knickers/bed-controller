@@ -148,6 +148,8 @@ void setup() {
 	Particle.function("feetAngle", setFeetAngle);
 	Particle.variable("headAngle", getHeadAngle);
 	Particle.variable("feetAngle", getFeetAngle);
+	Particle.variable("headReading", getHeadReading);
+	Particle.variable("feetReading", getFeetReading);
 
 	Serial.begin(115200);
 
@@ -289,28 +291,37 @@ int setFeetAngle(String angle) {
 }
 
 int addHeadAngle(String angle) {
-	Serial.printlnf("%d Add head angle %s", (int)Time.now(), angle.c_str());
+	Serial.printlnf("%d Add head angle: %s", (int)Time.now(), angle.c_str());
 	return head.addAngle(angle.toInt());
 }
 int addFeetAngle(String angle) {
-	Serial.printlnf("%d Add feet angle %s", (int)Time.now(), angle.c_str());
+	Serial.printlnf("%d Add feet angle: %s", (int)Time.now(), angle.c_str());
 	return feet.addAngle(angle.toInt());
 }
 
 int getHeadAngle() {
-	Serial.printlnf("%d Get head angle %d",(int)Time.now(),head.currentAngle());
+	Serial.printlnf("%d Get head angle: %d",(int)Time.now(),head.currentAngle());
 	return head.currentAngle();
 }
 int getFeetAngle() {
-	Serial.printlnf("%d Get feet angle %d",(int)Time.now(),feet.currentAngle());
+	Serial.printlnf("%d Get feet angle: %d",(int)Time.now(),feet.currentAngle());
 	return feet.currentAngle();
 }
 
+float getHeadReading() {
+	Serial.printlnf("%d Get head reading: %f",(int)Time.now(),head.lastReading());
+	return head.lastReading();
+}
+float getFeetReading() {
+	Serial.printlnf("%d Get feet reading: %f",(int)Time.now(),feet.lastReading());
+	return feet.lastReading();
+}
+
 int setHeadState(String state) {
-	Serial.printlnf("%d Set head state %s", (int)Time.now(), state.c_str());
+	Serial.printlnf("%d Set head state: %s", (int)Time.now(), state.c_str());
 	return head.setState(state);
 }
 int setFeetState(String state) {
-	Serial.printlnf("%d Set feet state %s", (int)Time.now(), state.c_str());
+	Serial.printlnf("%d Set feet state: %s", (int)Time.now(), state.c_str());
 	return feet.setState(state);
 }

@@ -46,6 +46,10 @@ int BedJoint::readingToAngle(float reading) {
 	return map((int)round(reading), _mapFromMin, _mapFromMax, _mapToMin, _mapToMax);
 }
 
+float BedJoint::lastReading() {
+	return _lastReading;
+}
+
 int BedJoint::currentAngle() {
 	return readingToAngle(_lastReading);
 }

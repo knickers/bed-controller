@@ -29,11 +29,12 @@ class BedJoint {
 	public:
 		BedJoint(int sensorPin, int upPin, int downPin, int buttonPin);
 		~BedJoint();
-		void init(int fromMin, int fromMax, int toMin, int toMax);
-		int  readingToAngle(float reading);
-		int  currentAngle();
-		void turnOff();
-		void update();
+		void  init(int fromMin, int fromMax, int toMin, int toMax);
+		int   readingToAngle(float reading);
+		int   currentAngle();
+		void  turnOff();
+		void  update();
+		float lastReading();
 		STATE setAngle(int angle);
 		STATE addAngle(int angle);
 		STATE setState(String state);
