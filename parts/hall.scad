@@ -26,31 +26,45 @@ distance = 16; // [10:1:20]
 
 magnet_r = radius + magnet/2 + wall;  // Radius to center of magnet arc
 magnet_a = asin(distance/2/magnet_r); // Angle between magnets
+echo("Maximum Angle:", magnet_a*2);
 
 // Resolution
 $fs = 2; // [1:High, 2:Medium, 4:Low]
 $fa = 0.01 + 0;
 
-part = "comb"; // [comb:Combined, sep:Separated, static:Stationary, dyn:Rotator]
+part = "Combined"; // [Combined, Separated, Stator, Rotor]
 
-if (part == "comb") {
+if (part == "Combined") {
 	translate([0, 0, height+wall+tolerance])
 		rotate(180, [1,0,0])
-			color("red") stationary_back();
+			color("red") stator_back();
 
-	rotate(22, [0,0,1])
+	rotate(magnet_a, [0,0,1])
 		translate([0, 0, -wall*2-tolerance])
-			color("yellow") stationary_front();
+			color("yellow") stator_front();
 
 	translate([0, 0, 0])
-		rotating_pivot();
+		rotor();
 }
-else if (part == "sep") {
+else if (part == "Separated") {
+	translate([-rivet, 0, 0])
+		rotor();
 	translate([rivet*2, 0, 0])
-		stationary_pivot();
+		stator_front();
+	translate([0, rivet*2, 0])
+		stator_back();
+}
+else if (part == "Stator") {
+	translate([0, -rivet, 0])
+		stator_front();
+	translate([0, rivet, 0])
+		stator_back();
+}
+else if (part == "Rotor") {
+	rotor();
 }
 
-module stationary_front() {
+module stator_front() {
 	difference() {
 		union() {
 			cylinder(d=rivet, h=wall*3);                    // Insert
@@ -68,7 +82,7 @@ module stationary_front() {
 	}
 }
 
-module stationary_back() {
+module stator_back() {
 	difference() {
 		union() {
 			cylinder(d=rivet+wall*2, h=height+wall+tolerance*2); // OD
@@ -79,54 +93,36 @@ module stationary_back() {
 	}
 }
 
-module rotating_pivot() {
-	or = rivet/2 + wall*2 + tolerance;
+module rotor() {
+	or = rivet/2 + wall*2 + tolerance; // Outside Radius
+	l = cos(magnet_a) * magnet_r;      // Horizontal Length
 
 	difference() {
-		cylinder(r=or, h=height);             // OD
+		union() {
+			translate([-l-magnet/2-wall, -distance/2, 0])
+				cube([magnet+wall, distance, height+steel+wall+tolerance]);
+			linear_extrude(height)
+				hull() {
+					circle(or);
+
+					rotate(-magnet_a, [0,0,1])
+						translate([-magnet_r, 0, 0])
+							circle(magnet/2 + wall);   // Upper rounder
+
+					rotate(magnet_a, [0,0,1])
+						translate([-magnet_r, 0, -1])
+							circle(magnet/2 + wall);   // Lower rounder
+				}
+		}
+
 		translate([0, 0, -1])
-			cylinder(r=or-wall, h=height+2);  // ID
-	}
+			cylinder(r=or-wall, h=height+2);           // ID
 
-	// soh cah toa
-
-	l = cos(magnet_a) * magnet_r;        // Horizontal Length at Support Arm
-	h = (distance+magnet)/2 + wall - or; // Vertical height at support arm
-	a = atan(h / l);
-
-	rotate(-a, [0,0,1])
-		translate([-l, or-wall, 0])
-			#cube([l, wall, height]);                   // Upper arm
-
-	rotate(a, [0,0,1])
-		translate([-l, -or, 0])
-			#cube([l, wall, height]);                    // Lower arm
-
-	magnet_holder();
-}
-
-module magnet_holder() {
-	H = height + steel + wall + tolerance;
-	D = magnet+wall*2;          // Distance between IR and OR
-	A = sin($t*360) * magnet_a; // Animation angle offset
-	difference() {
-		rotate(180-magnet_a + A, [0,0,1])
-			union() {
-				rotate_extrude(angle=magnet_a*2)
-					translate([radius, 0, 0])
-						square([D, H]);         // Main body arc
-				translate([magnet_r, 0, 0])
-					cylinder(d=D, h=H);         // Lower Rounded Edge
-				rotate(magnet_a*2, [0,0,1])
-					translate([magnet_r, 0, 0])
-						cylinder(d=D, h=H);     // Upper Rounded Edge
-			}
-
-		rotate(-magnet_a + A, [0,0,1])
+		rotate(-magnet_a, [0,0,1])
 			translate([-magnet_r, 0, -1])
 				cylinder(d=magnet+tolerance, h=mag_thick+1);   // Upper magent
 
-		rotate(magnet_a + A, [0,0,1])
+		rotate(magnet_a, [0,0,1])
 			translate([-magnet_r, 0, -1])
 				cylinder(d=magnet+tolerance, h=mag_thick+1);   // Lower magent
 	}
