@@ -144,17 +144,17 @@ STATE BedJoint::setState(String state) {
 
 	if (state == "off") {
 		_state = OFF;
-		digitalWrite(_pinUp, LOW);
+		digitalWrite(_pinUp,   LOW);
 		digitalWrite(_pinDown, LOW);
 	}
 	else if (state == "raise") {
 		_state = RAISING;
-		digitalWrite(_pinUp, HIGH); // Turn on the up switch
 		digitalWrite(_pinDown, LOW);
+		digitalWrite(_pinUp,   HIGH); // Turn on the up switch
 	}
 	else if (state == "lower") {
 		_state = LOWERING;
-		digitalWrite(_pinUp, LOW);
+		digitalWrite(_pinUp,   LOW);
 		digitalWrite(_pinDown, HIGH); // Turn on the down switch
 	}
 
