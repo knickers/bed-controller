@@ -52,9 +52,9 @@ if (part == "Combined") {
 else if (part == "Separated") {
 	translate([-rivet, 0, 0])
 		rotor();
-	translate([rivet*2, 0, 0])
+	translate([rivet, 0, 0])
 		stator_front();
-	translate([0, rivet*2, 0])
+	translate([0, rivet, 0])
 		stator_back();
 }
 else if (part == "Stator") {
