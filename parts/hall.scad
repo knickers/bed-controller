@@ -8,22 +8,19 @@ wall = 2; // [1:0.5:5]
 steel = 5; // [2:0.5:10]
 
 // Rivet Diameter
-rivet = 20; // [15:0.5:25]
+rivet = 19.5; // [15:0.5:25]
 
 // Radius to Support Block
-radius = 18; // [10:1:30]
-
-// Part Height
-height = 4; // [1:1:20]
-
-// Magnet Thickness
-magnet_t = 3; // [1:0.5:5]
+radius = 20; // [10:1:30]
 
 // Magnet Diameter
 magnet_d = 8; // [1:1:20]
 
+// Magnet Height
+magnet_h = 3; // [1:0.5:5]
+
 // Angle Between Magnets
-magnet_a = 60; // [20:1:90]
+magnet_a = 65; // [20:1:90]
 
 // Distance Between Magnets
 distance = 16; // [10:1:20]
@@ -38,7 +35,7 @@ $fa = 0.01 + 0;
 part = "Combined"; // [Combined, Separated, Stator, Rotor]
 
 if (part == "Combined") {
-	translate([0, 0, height+wall*2+tolerance])
+	translate([0, 0, magnet_h+wall*2+tolerance])
 		rotate(180, [1,0,0])
 			color("red") stator_back();
 
@@ -87,19 +84,20 @@ module stator_front() {
 }
 
 module stator_back() {
+	h = magnet_h + wall*2 + tolerance*2;
 	difference() {
 		union() {
-			cylinder(d=rivet, h=height+wall*2+tolerance*2);        // OD
-			cylinder(d=rivet+wall*2+tolerance*2, h=wall*2);        // Flange
+			cylinder(d=rivet, h=h);                         // OD
+			cylinder(d=rivet+wall*2+tolerance*2, h=wall*2); // Flange
 		}
 
 		translate([0, 0, -1])
-			cylinder(d=rivet-wall*2, h=height+wall*2+tolerance+2); // ID
+			cylinder(d=rivet-wall*2, h=h+2);                // ID
 
 		translate([0, 0, wall])
-			cylinder(r1=rivet/2, r2=rivet/2-wall, h=wall);         // Cone
+			cylinder(r1=rivet/2, r2=rivet/2-wall, h=wall);  // Cone
 
-		cylinder(r=rivet/2, h=wall);                               // Cone shaft
+		cylinder(r=rivet/2, h=wall);                        // Cone shaft
 	}
 }
 
@@ -110,10 +108,10 @@ module rotor() {
 	difference() {
 		union() {
 			translate([-radius-mag-wall, 0, 0])
-				cylinder(r=mag+wall, h=height+steel+wall*2+tolerance);
+				cylinder(r=mag+wall, h=magnet_h+steel+wall*2+tolerance);
 					// Support block
 
-			linear_extrude(height)
+			linear_extrude(magnet_h)
 				hull() {
 					circle(or);
 
@@ -131,14 +129,14 @@ module rotor() {
 		}
 
 		translate([0, 0, -1])
-			cylinder(r=or-wall, h=height+2);           // ID
+			cylinder(r=or-wall, h=magnet_h+2);         // ID
 
 		rotate(-magnet_a/2, [0,0,1])
 			translate([-magnet_r, 0, -1])
-				cylinder(d=magnet_d+tolerance, h=magnet_t+tolerance+1); // Upper
+				cylinder(d=magnet_d+tolerance, h=magnet_h+tolerance+2); // Upper
 
 		rotate(magnet_a/2, [0,0,1])
 			translate([-magnet_r, 0, -1])
-				cylinder(d=magnet_d+tolerance, h=magnet_t+tolerance+1); // Lower
+				cylinder(d=magnet_d+tolerance, h=magnet_h+tolerance+2); // Lower
 	}
 }
