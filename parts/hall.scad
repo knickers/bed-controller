@@ -32,7 +32,7 @@ magnet_r = distance/2 / sin(magnet_a/2);
 $fs = 2; // [1:High, 2:Medium, 4:Low]
 $fa = 0.01 + 0;
 
-part = "Combined"; // [Combined, Separated, Stator, Rotor]
+part = "Combined"; // [Combined, Separated, Rotor, Stator Front, Stator Back]
 
 if (part == "Combined") {
 	translate([0, 0, magnet_h+wall*2+tolerance])
@@ -54,14 +54,14 @@ else if (part == "Separated") {
 	translate([0, rivet, 0])
 		stator_back();
 }
-else if (part == "Stator") {
-	translate([0, -rivet, 0])
-		stator_front();
-	translate([0, rivet, 0])
-		stator_back();
-}
 else if (part == "Rotor") {
 	rotor();
+}
+else if (part == "Stator Front") {
+	stator_front();
+}
+else if (part == "Stator Back") {
+	stator_back();
 }
 
 module stator_front() {
@@ -85,19 +85,25 @@ module stator_front() {
 
 module stator_back() {
 	h = magnet_h + wall*2 + tolerance*2;
+	flange = rivet + wall*2 + tolerance*2;
+
 	difference() {
 		union() {
-			cylinder(d=rivet, h=h);                         // OD
-			cylinder(d=rivet+wall*2+tolerance*2, h=wall*2); // Flange
+			cylinder(d=rivet, h=h);                       // OD
+			cylinder(d=flange, h=wall*2);                 // Flange
 		}
 
 		translate([0, 0, -1])
-			cylinder(d=rivet-wall*2, h=h+2);                // ID
+			cylinder(d=rivet-wall*2, h=h+2);              // ID
 
 		translate([0, 0, wall])
-			cylinder(r1=rivet/2, r2=rivet/2-wall, h=wall);  // Cone
+			cylinder(r1=rivet/2, r2=rivet/2-wall, h=wall);// Cone
 
-		cylinder(r=rivet/2, h=wall);                        // Cone shaft
+		cylinder(r=rivet/2, h=wall);                      // Cone shaft
+
+		translate([-flange/2, rivet/2, 0])
+			rotate(-45, [1,0,0])
+				cube([flange, wall*2, h]);                // Steel corner cutout
 	}
 }
 
