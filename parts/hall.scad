@@ -35,16 +35,22 @@ $fa = 0.01 + 0;
 part = "Combined"; // [Combined, Separated, Rotor, Stator Front, Stator Back]
 
 if (part == "Combined") {
-	translate([0, 0, magnet_h+wall*2+tolerance])
-		rotate(180, [1,0,0])
-			color("red") stator_back();
+	difference() {
+		union() {
+			translate([0, 0, magnet_h+wall*2+tolerance])
+				rotate(180, [1,0,0])
+					color("red") stator_back();
 
-	rotate(magnet_a/2, [0,0,1])
-		translate([0, 0, -wall*2-tolerance])
-			color("yellow") stator_front();
+			rotate(magnet_a/2, [0,0,1])
+				translate([0, 0, -wall*2-tolerance])
+					color("gray") stator_front();
 
-	translate([0, 0, 0])
-		rotor();
+			translate([0, 0, 0])
+				rotor();
+		}
+		translate([0, 0, -rivet/2])
+			cube(rivet);
+	}
 }
 else if (part == "Separated") {
 	translate([-rivet, 0, 0])
