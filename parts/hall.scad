@@ -72,8 +72,8 @@ module stator_front() {
 			cylinder(d=flange, h=wall*2);       // Flange
 			linear_extrude(wall)
 				polygon([                       // Sensor tab
-					[-magnet_r-2, 1],    // Q2
-					[-magnet_r-2, -1],   // Q3
+					[-magnet_r-2, 2],    // Q2
+					[-magnet_r-2, -2],   // Q3
 					[-rivet/2, -wall*3], // Q4
 					[-rivet/2, wall*3]   // Q1
 				]);
