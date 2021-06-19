@@ -23,7 +23,7 @@ magnet_h = 3; // [1:0.5:5]
 magnet_a = 65; // [20:1:90]
 
 // Distance Between Magnets
-distance = 16; // [10:1:20]
+distance = 15; // [10:1:20]
 
 // Radius to center of magnet arc
 magnet_r = distance/2 / sin(magnet_a/2);
@@ -43,7 +43,7 @@ if (part == "Combined") {
 
 			rotate(magnet_a/2, [0,0,1])
 				translate([0, 0, -wall*2-tolerance])
-					color("gray") stator_front();
+					color("blue") stator_front();
 
 			translate([0, 0, 0])
 				rotor();
@@ -71,21 +71,25 @@ else if (part == "Stator Back") {
 }
 
 module stator_front() {
-	flange = rivet+wall*2+tolerance*2;
+	flange = rivet+wall*0+tolerance*2;
 	difference() {
 		union() {
-			cylinder(d=rivet-wall*2, h=wall*3); // Insert
+			cylinder(d=rivet-wall*4, h=wall*3); // Insert
 			cylinder(d=flange, h=wall*2);       // Flange
 			linear_extrude(wall)
 				polygon([                       // Sensor tab
 					[-magnet_r-2, 2],    // Q2
 					[-magnet_r-2, -2],   // Q3
-					[-rivet/2, -wall*3], // Q4
-					[-rivet/2, wall*3]   // Q1
+					[-rivet/2+wall, -wall*3], // Q4
+					[-rivet/2+wall, wall*3]   // Q1
 				]);
 		}
-		translate([-flange/2-1, -1.5, -1])
-			cube([1, 3, wall+2]);               // Wire Cutout
+		translate([0, 0, -1])
+			cylinder(d=rivet-wall*6, h=wall*3+2, $fn=7);// Center Hole
+		translate([-flange/2.025-1, -1.5, -1])
+			cube([1, 3, wall*2+2]);               // Vertical Wire Cutout
+		translate([-rivet, -1.5, wall])
+			cube([rivet, 3, 1]);               // Horizontal Wire Cutout
 	}
 }
 
@@ -95,26 +99,26 @@ module stator_back() {
 
 	difference() {
 		union() {
-			cylinder(d=rivet, h=h);                       // OD
+			cylinder(d=rivet-wall*2, h=h);                // OD
 			cylinder(d=flange, h=wall*2);                 // Flange
 		}
 
+		translate([0, 0, wall*2])
+			cylinder(d=rivet-wall*4, h=wall*2);           // ID
+
 		translate([0, 0, -1])
-			cylinder(d=rivet-wall*2, h=h+2);              // ID
-
-		translate([0, 0, wall])
-			cylinder(r1=rivet/2, r2=rivet/2-wall, h=wall);// Cone
-
-		cylinder(r=rivet/2, h=wall);                      // Cone shaft
+			cylinder(d=rivet, h=wall+1);                  // Rivet cutout
 
 		translate([-flange/2, rivet/2, 0])
 			rotate(-45, [1,0,0])
 				cube([flange, wall*2, h]);                // Steel corner cutout
+
+		//translate([0, 0, -1]) cube(rivet);
 	}
 }
 
 module rotor() {
-	or = rivet/2 + wall + tolerance; // Outside Radius
+	or = rivet/2 + tolerance; // Outside Radius
 	mag = magnet_d / 2;
 
 	difference() {
