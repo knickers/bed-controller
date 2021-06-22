@@ -2,7 +2,6 @@
 #define BedJoint_h
 
 #include "AnalogSmoother.h"
-#include "Debounce.h"
 
 enum STATE {
 	OFF,
@@ -14,28 +13,17 @@ class BedJoint {
 	private:
 		int _pinUp;
 		int _pinDown;
-		int _pinButton;
-		int _angleMax;
-		int _angleTarget;
-		int _mapFromMin;
-		int _mapFromMax;
-		int _mapToMin;
-		int _mapToMax;
-		float _lastReading;
-		float _tolerance;
+		uint32_t _max;          // Maximum milliseconds to remain on
+		uint64_t _started;      // Milliseconds when the movement started
+		uint64_t _target;       // Milliseconds when the movement is to stop
+		uint64_t _rampUp;       // Milliseconds to ramp up to full speed
+		uint64_t _rampDown;     // Milliseconds to coast down to stop
+		uint64_t _millisAngle;  // Milliseconds per angle in degrees
 		STATE _state;
-		AnalogSmoother* _sensor;
-		Debounce* _endstop;
 	public:
-		BedJoint(int sensorPin, int upPin, int downPin, int buttonPin);
-		~BedJoint();
-		void  init(int fromMin, int fromMax, int toMin, int toMax);
-		int   readingToAngle(float reading);
-		int   currentAngle();
+		BedJoint(int upPin, int downPin);
 		void  turnOff();
 		void  update();
-		float lastReading();
-		STATE setAngle(int angle);
 		STATE addAngle(int angle);
 		STATE setState(String state);
 };
