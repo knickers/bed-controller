@@ -35,8 +35,8 @@ State* _down = parser.addState([]() {
 	token.next();
 
 	if (token.eq("")) {
-		head.addAngle(-ANGLE_FULL);
-		feet.addAngle(-ANGLE_FULL);
+		head.addAngle(-ANGLE_MAX);
+		feet.addAngle(-ANGLE_MAX);
 	}
 });
 State* _set = parser.addState([]() {
