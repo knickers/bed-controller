@@ -14,6 +14,8 @@ BedJoint* joint;
 
 StateMachine parser = StateMachine();
 
+Tokenizer token = Tokenizer();
+void nextToken() { token.next(); }
 
 /*******************************************************************/
 /**************************** States *******************************/
@@ -23,18 +25,18 @@ State* _start = parser.addState(&nextToken);
 State* _to    = parser.addState(&nextToken);
 State* _for   = parser.addState(&nextToken);
 State* _up    = parser.addState([]() {
-	nextToken();
+	token.next();
 
-	if (_token == "") {
-		_joint->addAngle(ANGLE_UP);
+	if (token.eq("")) {
+		joint->addAngle(ANGLE_UP);
 	}
 });
 State* _down = parser.addState([]() {
-	nextToken();
+	token.next();
 
-	if (_token == "") {
-		feet.setAngle(0);
-		feet.setAngle(0);
+	if (token.eq("")) {
+		head.addAngle(-ANGLE_FULL);
+		feet.addAngle(-ANGLE_FULL);
 	}
 });
 State* _set = parser.addState([]() {
@@ -42,26 +44,26 @@ State* _set = parser.addState([]() {
 		joint->addAngle(round(token.toFloat()));
 	}
 
-	nextToken();
+	token.next();
 });
 State* _add = parser.addState([]() {
 	if (parser.executeOnce) {
 		joint->addAngle(round(token.toFloat()));
 	}
 
-	nextToken();
+	token.next();
 });
 State* _sub = parser.addState([]() {
 	if (parser.executeOnce) {
 		joint->addAngle(round(token.toFloat()) * -1);
 	}
 
-	nextToken();
+	token.next();
 });
 State* _pos = parser.addState([]() {
 	if (parser.executeOnce) {
-		remainingTokenString();
-		trimTokenEnd("position");
+		token.remaining();
+		token.trimEnd("position");
 	}
 });
 State* _err = parser.addState([]() {
@@ -224,7 +226,9 @@ int executeCommand(String cmd) {
 	cmd.trim();
 	cmd.toLowerCase();
 
-	resetTokenString(cmd);
+	joint = NULL;
+
+	token.set(cmd);
 
 	parser.exec();
 

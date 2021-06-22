@@ -1,0 +1,84 @@
+#include "Tokenizer.h"
+
+Tokenizer::Tokenizer() {
+	_idx = 0;
+	_lastIdx = 0;
+	_string = "";
+	_token = "";
+}
+
+void Tokenizer::set(String str) {
+	if (Serial.isConnected()) {
+		Serial.printlnf("New token string: '%s'", str.c_str());
+	}
+	_string = str;
+	_token = "";
+	_idx = 0;
+	_lastIdx = 0;
+}
+
+void Tokenizer::next() {
+	_lastIdx = _idx;
+	_idx = _string.indexOf(' ', _lastIdx);
+	_token = _string.substring(_lastIdx, _idx);
+	_token.trim();
+
+	if (Serial.isConnected()) {
+		Serial.printlnf("Old idx: %d, New idx: %d, Token: %s",
+			_lastIdx,
+			_idx,
+			_token.c_str()
+		);
+	}
+}
+
+void Tokenizer::remaining() {
+	_token = _string.substring(_lastIdx);
+}
+
+void Tokenizer::trimEnd(String str) {
+	if (_token.endsWith(str)) {
+		_token = _token.substring(0, _token.length()-str.length());
+		_token.trim();
+	}
+}
+
+bool Tokenizer::eq(String str) {
+	return _token == str;
+}
+
+bool Tokenizer::isNumeric() {
+	unsigned int stringLength = _token.length();
+
+	if (stringLength == 0) {
+		return false;
+	}
+
+	bool seenDecimal = false;
+
+	for (unsigned int i = 0; i < stringLength; i++) {
+		if (isDigit(_token.charAt(i))) {
+			continue;
+		}
+
+		if (_token.charAt(i) == '.') {
+			if (seenDecimal) {
+				return false;
+			}
+			seenDecimal = true;
+			continue;
+		}
+
+		return false;
+	}
+
+	return true;
+}
+
+float Tokenizer::toFloat() {
+	return _token.toFloat();
+}
+
+String Tokenizer::val() {
+	return _token;
+}
