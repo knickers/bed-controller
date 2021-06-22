@@ -113,7 +113,6 @@ bool t_head() {
 	}
 	return ok;
 }
-bool t_eq(String str) { return token.eq(str); }
 bool t_to()   { return token.eq("to"); }
 bool t_for()  { return token.eq("for"); }
 bool t_up()   { return token.eq("up"); }
@@ -140,6 +139,7 @@ void setup() {
 	_start->addTransition(&t_up,   _up);
 	_start->addTransition(&t_down, _down);
 	_start->addTransition(&t_all,  _pos);
+	_start->addTransition([]() { return token.eq(""); }, p_off);
 
 	_to->addTransition(&t_the, _to);
 	_to->addTransition(&t_num, _set);
@@ -168,35 +168,35 @@ void setup() {
 
 	// Named Positions
 	_pos->addTransition(&t_up, p_up);
-	_pos->addTransition([]() { return t_eq("tv");          }, p_up);
-	_pos->addTransition([]() { return t_eq("tv watching"); }, p_up);
-	_pos->addTransition([]() { return t_eq("watching tv"); }, p_up);
+	_pos->addTransition([]() { return token.eq("tv");          }, p_up);
+	_pos->addTransition([]() { return token.eq("tv watching"); }, p_up);
+	_pos->addTransition([]() { return token.eq("watching tv"); }, p_up);
 
 	_pos->addTransition(&t_down, p_down);
-	_pos->addTransition([]() { return t_eq("bottom"); }, p_down);
+	_pos->addTransition([]() { return token.eq("bottom"); }, p_down);
 
-	_pos->addTransition([]() { return t_eq("company");           }, p_half);
-	_pos->addTransition([]() { return t_eq("talking");           }, p_half);
-	_pos->addTransition([]() { return t_eq("teeth");             }, p_half);
-	_pos->addTransition([]() { return t_eq("brushing");          }, p_half);
-	_pos->addTransition([]() { return t_eq("teeth brushing");    }, p_half);
-	_pos->addTransition([]() { return t_eq("brush my teeth");    }, p_half);
-	_pos->addTransition([]() { return t_eq("brushing my teeth"); }, p_half);
+	_pos->addTransition([]() { return token.eq("company");           }, p_half);
+	_pos->addTransition([]() { return token.eq("talking");           }, p_half);
+	_pos->addTransition([]() { return token.eq("teeth");             }, p_half);
+	_pos->addTransition([]() { return token.eq("brushing");          }, p_half);
+	_pos->addTransition([]() { return token.eq("teeth brushing");    }, p_half);
+	_pos->addTransition([]() { return token.eq("brush my teeth");    }, p_half);
+	_pos->addTransition([]() { return token.eq("brushing my teeth"); }, p_half);
 
-	_pos->addTransition([]() { return t_eq("lift");        }, p_alltheway);
-	_pos->addTransition([]() { return t_eq("lifting");     }, p_alltheway);
-	_pos->addTransition([]() { return t_eq("all the way"); }, p_alltheway);
+	_pos->addTransition([]() { return token.eq("lift");        }, p_alltheway);
+	_pos->addTransition([]() { return token.eq("lifting");     }, p_alltheway);
+	_pos->addTransition([]() { return token.eq("all the way"); }, p_alltheway);
 
-	_pos->addTransition([]() { return t_eq("halfway");     }, p_halfway);
-	_pos->addTransition([]() { return t_eq("half way");    }, p_halfway);
-	_pos->addTransition([]() { return t_eq("halfway up");  }, p_halfway);
-	_pos->addTransition([]() { return t_eq("half way up"); }, p_halfway);
+	_pos->addTransition([]() { return token.eq("halfway");     }, p_halfway);
+	_pos->addTransition([]() { return token.eq("half way");    }, p_halfway);
+	_pos->addTransition([]() { return token.eq("halfway up");  }, p_halfway);
+	_pos->addTransition([]() { return token.eq("half way up"); }, p_halfway);
 
-	_pos->addTransition([]() { return t_eq("");       }, p_off);
-	_pos->addTransition([]() { return t_eq("now");    }, p_off);
-	_pos->addTransition([]() { return t_eq("off");    }, p_off);
-	_pos->addTransition([]() { return t_eq("stop");   }, p_off);
-	_pos->addTransition([]() { return t_eq("cancel"); }, p_off);
+	_pos->addTransition([]() { return token.eq("");       }, p_off);
+	_pos->addTransition([]() { return token.eq("now");    }, p_off);
+	_pos->addTransition([]() { return token.eq("off");    }, p_off);
+	_pos->addTransition([]() { return token.eq("stop");   }, p_off);
+	_pos->addTransition([]() { return token.eq("cancel"); }, p_off);
 
 	_pos->addTransition(&t_all, _err);
 
