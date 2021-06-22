@@ -20,14 +20,29 @@ void Tokenizer::set(String str) {
 }
 
 void Tokenizer::next() {
-	_lastIdx = _idx;
-	_idx = _string.indexOf(' ', _lastIdx);
-	_token = _string.substring(_lastIdx, _idx);
-	_token.trim();
-
-	if (_idx < _len) {
-		_idx++;
+	if (_idx >= _len) {
+		_token = "";
+		return;
 	}
+
+	do {
+		_lastIdx = _idx;
+		_idx = _string.indexOf(' ', _lastIdx);
+
+		if (_idx == -1) {
+			_idx = _len;
+		}
+
+		_token = _string.substring(_lastIdx, _idx);
+		_token.trim();
+
+		if (_idx < _len) {
+			_idx++;
+		}
+		else { // if (_idx >= _len) {
+			break;
+		}
+	} while (_token == "");
 
 	if (Serial.isConnected()) {
 		Serial.printlnf("Old idx: '%d', New idx: '%d', Token: '%s'",
