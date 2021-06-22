@@ -1,51 +1,41 @@
 #include "Tokenizer.h"
 
 Tokenizer::Tokenizer() {
-	_len = 0;
-	_idx = 0;
-	_lastIdx = 0;
-	_string = "";
-	_token = "";
 }
 
-void Tokenizer::set(String str) {
+void Tokenizer::set(char* str) {
 	if (Serial.isConnected()) {
 		Serial.printlnf("New token string: '%s'", str.c_str());
 	}
 	_string = str;
-	_token = "";
-	_len = str.length();
-	_idx = 0;
-	_lastIdx = 0;
+	_token = NULL;
 }
 
 void Tokenizer::next() {
-	_lastIdx = _idx;
-	_idx = _string.indexOf(' ', _lastIdx);
-	_token = _string.substring(_lastIdx, _idx);
-	_token.trim();
+	if (_token == NULL) {
+		_token = strtok(_string, _sep);
+	}
+	else {
+		_token = strtok(NULL, _sep);
+	}
 
 	if (Serial.isConnected()) {
-		Serial.printlnf("Old idx: '%d', New idx: '%d', Token: '%s'",
-			_lastIdx,
-			_idx,
-			_token.c_str()
-		);
+		Serial.printlnf("Token: '%s' String: '%s'", _token, _string);
 	}
 }
 
 void Tokenizer::remaining() {
-	_token = _string.substring(_lastIdx);
+	_token = _string;
 }
 
-void Tokenizer::trimEnd(String str) {
+void Tokenizer::trimEnd(char* str) {
 	if (_token.endsWith(str)) {
 		_token = _token.substring(0, _token.length()-str.length());
 		_token.trim();
 	}
 }
 
-bool Tokenizer::eq(String str) {
+bool Tokenizer::eq(char* str) {
 	return _token == str;
 }
 
@@ -81,6 +71,6 @@ float Tokenizer::toFloat() {
 	return _token.toFloat();
 }
 
-String Tokenizer::val() {
+char* Tokenizer::val() {
 	return _token;
 }

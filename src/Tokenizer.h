@@ -5,21 +5,19 @@
 
 class Tokenizer {
 	private:
-		unsigned _len;
-		unsigned _idx;
-		unsigned _lastIdx;
-		String _string;
-		String _token;
+		char _string[64];
+		char* _token;
+		char* _sep = " \t";
 	public:
 		Tokenizer();
-		void set(String str);
+		void set(char* str);
 		void next();
 		void remaining();
-		void trimEnd(String str);
-		bool eq(String str);
+		void trimEnd(char* str);
+		bool eq(char* str);
 		bool isNumeric();
 		float toFloat();
-		String val();
+		char* val();
 };
 
 #endif
