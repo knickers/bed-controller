@@ -1,6 +1,7 @@
 #include "Tokenizer.h"
 
 Tokenizer::Tokenizer() {
+	_len = 0;
 	_idx = 0;
 	_lastIdx = 0;
 	_string = "";
@@ -13,6 +14,7 @@ void Tokenizer::set(String str) {
 	}
 	_string = str;
 	_token = "";
+	_len = str.length();
 	_idx = 0;
 	_lastIdx = 0;
 }

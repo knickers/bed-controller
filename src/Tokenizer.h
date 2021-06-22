@@ -5,8 +5,9 @@
 
 class Tokenizer {
 	private:
-		int    _idx;
-		int    _lastIdx;
+		unsigned _len;
+		unsigned _idx;
+		unsigned _lastIdx;
 		String _string;
 		String _token;
 	public:
