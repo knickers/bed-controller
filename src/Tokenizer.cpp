@@ -24,7 +24,7 @@ void Tokenizer::next() {
 	_token.trim();
 
 	if (Serial.isConnected()) {
-		Serial.printlnf("Old idx: %d, New idx: %d, Token: %s",
+		Serial.printlnf("Old idx: '%d', New idx: '%d', Token: '%s'",
 			_lastIdx,
 			_idx,
 			_token.c_str()

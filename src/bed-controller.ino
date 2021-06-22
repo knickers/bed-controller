@@ -69,7 +69,7 @@ State* _pos = parser.addState([]() {
 State* _err = parser.addState([]() {
 	head.turnOff();
 	feet.turnOff();
-	publish("error", "Invalid named position: " + token.val());
+	publish("error", "Invalid named position: '" + token.val() + "'");
 });
 
 
