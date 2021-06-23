@@ -4,14 +4,11 @@ BedJoint::BedJoint(int upPin, int downPin) {
 	_state       = OFF;
 	_pinUp       = upPin;
 	_pinDown     = downPin;
-	_max         = 10000;   // Maximum milliseconds to remain on (10s)
-	_rampUp      = 100;     // Milliseconds to ramp up to full speed
-	_rampDown    = 500;     // Milliseconds to coast down to stop
-	_millisAngle = 1000;    // Milliseconds per angle in degrees
-	_target      = 0;
-
-	pinMode(_pinUp, OUTPUT);
-	pinMode(_pinDown, OUTPUT);
+	_target      = 0;                 // Milliseconds target to end movement
+	_rampUp      = 100;               // Milliseconds to ramp up to full speed
+	_rampDown    = 500;               // Milliseconds to coast down to stop
+	_millisAngle = 1000;              // Milliseconds per angle in degrees
+	_max         = _millisAngle * 60; // Maximum milliseconds to remain on
 }
 
 void BedJoint::turnOff() {
