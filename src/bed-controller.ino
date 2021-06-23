@@ -187,6 +187,8 @@ void setup() {
 
 	_pos->addTransition([]() { return token.eq("company");           }, p_half);
 	_pos->addTransition([]() { return token.eq("talking");           }, p_half);
+	_pos->addTransition([]() { return token.eq("eat");               }, p_half);
+	_pos->addTransition([]() { return token.eq("eating");            }, p_half);
 	_pos->addTransition([]() { return token.eq("teeth");             }, p_half);
 	_pos->addTransition([]() { return token.eq("brushing");          }, p_half);
 	_pos->addTransition([]() { return token.eq("teeth brushing");    }, p_half);
@@ -196,6 +198,7 @@ void setup() {
 	_pos->addTransition([]() { return token.eq("lift");        }, p_alltheway);
 	_pos->addTransition([]() { return token.eq("lifting");     }, p_alltheway);
 	_pos->addTransition([]() { return token.eq("all the way"); }, p_alltheway);
+	_pos->addTransition([]() { return token.eq("all the way up");},p_alltheway);
 
 	_pos->addTransition([]() { return token.eq("halfway");     }, p_halfway);
 	_pos->addTransition([]() { return token.eq("half way");    }, p_halfway);
