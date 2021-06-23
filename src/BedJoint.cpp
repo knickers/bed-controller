@@ -32,10 +32,16 @@ void BedJoint::update() {
 }
 
 STATE BedJoint::addAngle(int angle) {
+	if (Serial.isConnected()) {
+		Serial.printlnf("Adding angle: '%d'", angle);
+	}
+
 	turnOff();
 
+	_started = System.millis();
+
 	// TODO account for ramp up and down
-	_target = abs(angle)*_millisAngle + System.millis();
+	_target = abs(angle)*_millisAngle + _started;
 
 	if (angle > 0) {
 		_state = RAISING;

@@ -1,7 +1,7 @@
 #ifndef BedJoint_h
 #define BedJoint_h
 
-#include "AnalogSmoother.h"
+#include "Particle.h"
 
 enum STATE {
 	OFF,
