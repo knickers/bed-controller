@@ -3,13 +3,18 @@
 #include <StateMachine.h>
 #include <Tokenizer.h>
 
+#define PIN_HEAD_UP 0
+#define PIN_HEAD_DN 1
+#define PIN_FEET_UP 2
+#define PIN_FEET_DN 3
+
 #define ANGLE_UP   10
 #define ANGLE_HALF 20
 #define ANGLE_FULL 45
 #define ANGLE_MAX  60
 
-BedJoint  head(0, 2);
-BedJoint  feet(4, 6);
+BedJoint  head(PIN_HEAD_UP, PIN_HEAD_DN);
+BedJoint  feet(PIN_FEET_UP, PIN_FEET_DN);
 BedJoint* joint;
 
 StateMachine parser = StateMachine();
@@ -130,6 +135,11 @@ void setup() {
 	Particle.function("headAngle", setHeadAngle);
 	Particle.function("feetState", setFeetState);
 	Particle.function("feetAngle", setFeetAngle);
+
+	pinMode(PIN_HEAD_UP, OUTPUT);
+	pinMode(PIN_HEAD_DN, OUTPUT);
+	pinMode(PIN_FEET_UP, OUTPUT);
+	pinMode(PIN_FEET_DN, OUTPUT);
 
 	// StateMachine Transitions
 	_start->addTransition(&t_feet, _start);
