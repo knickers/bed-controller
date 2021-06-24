@@ -27,8 +27,14 @@ void nextToken() { token.next(); }
 /*******************************************************************/
 
 State* _start = parser.addState(&nextToken);
-State* _to    = parser.addState(&nextToken);
 State* _for   = parser.addState(&nextToken);
+State* _to    = parser.addState([]() {
+	token.next();
+
+	if (token.eq("") || token.eq("degrees")) {
+		joint->addAngle(2);
+	}
+});
 State* _up    = parser.addState([]() {
 	token.next();
 
@@ -120,13 +126,15 @@ bool t_head() {
 }
 bool t_to()   { return token.eq("to"); }
 bool t_for()  { return token.eq("for"); }
-bool t_up()   { return token.eq("up"); }
+bool t_up()   { return token.eq("up") || token.eq("of"); }
 bool t_down() { return token.eq("down"); }
 bool t_by()   { return token.eq("by"); }
 bool t_the()  { return token.eq("the"); }
 bool t_num()  { return token.isNumeric(); }
 bool t_all()  { return !token.eq(""); }
-bool t_deg()  { return token.eq("degrees") || token.eq("°"); } // \u00B0
+bool t_deg()  {
+	return token.eq("degrees") || token.eq("degree") || token.eq("°"); // \u00B0
+}
 
 
 void setup() {
@@ -152,7 +160,7 @@ void setup() {
 	_start->addTransition([]() { return token.eq(""); }, p_off);
 
 	_to->addTransition(&t_the, _to);
-	_to->addTransition(&t_num, _set);
+	_to->addTransition(&t_num, _add);
 	_to->addTransition(&t_all, _pos);
 
 	_for->addTransition(&t_the, _for);

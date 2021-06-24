@@ -71,6 +71,13 @@ bool Tokenizer::eq(String str) {
 bool Tokenizer::isNumeric() {
 	unsigned int stringLength = _token.length();
 
+	for (unsigned int i = 0; i < 10; i++) {
+		if (_token == _numbers[i]) {
+			_token = String(i);
+			return true;
+		}
+	}
+
 	if (stringLength == 0) {
 		return false;
 	}

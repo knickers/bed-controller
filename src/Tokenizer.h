@@ -5,11 +5,12 @@
 
 class Tokenizer {
 	private:
-		unsigned _len;
-		unsigned _idx;
-		unsigned _lastIdx;
+		int _len;
+		int _idx;
+		int _lastIdx;
 		String _string;
 		String _token;
+		String _numbers[10] = {"zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"};
 	public:
 		Tokenizer();
 		void set(String str);
