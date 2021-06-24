@@ -8,10 +8,12 @@
 #define PIN_FEET_UP 2
 #define PIN_FEET_DN 3
 
-#define ANGLE_UP   10
-#define ANGLE_HALF 20
+#define ANGLE_UP   20
+#define ANGLE_HALF 30
 #define ANGLE_FULL 45
 #define ANGLE_MAX  60
+
+// Head bottom slop ~~ 2 sec ~~ 8 degrees
 
 BedJoint  head(PIN_HEAD_UP, PIN_HEAD_DN);
 BedJoint  feet(PIN_FEET_UP, PIN_FEET_DN);
@@ -46,16 +48,8 @@ State* _down = parser.addState([]() {
 	token.next();
 
 	if (token.eq("")) {
-		head.addAngle(-ANGLE_MAX);
-		feet.addAngle(-ANGLE_MAX);
+		joint->addAngle(-ANGLE_UP);
 	}
-});
-State* _set = parser.addState([]() {
-	if (parser.executeOnce) {
-		joint->addAngle(round(token.toFloat()));
-	}
-
-	token.next();
 });
 State* _add = parser.addState([]() {
 	if (parser.executeOnce) {
@@ -89,17 +83,17 @@ State* _err = parser.addState([]() {
 /********************************************************************/
 
 State* p_up   = parser.addState([]() { joint->addAngle(ANGLE_UP); });
-State* p_down = parser.addState([]() { joint->addAngle(-ANGLE_MAX); });
+State* p_down = parser.addState([]() { joint->addAngle(-ANGLE_FULL); });
 State* p_half = parser.addState([]() { joint->addAngle(ANGLE_HALF); });
 State* p_full = parser.addState([]() { joint->addAngle(ANGLE_FULL); });
 State* p_off  = parser.addState([]() { head.turnOff(); feet.turnOff(); });
 State* p_alltheway = parser.addState([]() {
 	head.addAngle(ANGLE_FULL);
-	feet.addAngle(ANGLE_FULL);
+	feet.addAngle(ANGLE_FULL/2);
 });
 State* p_halfway = parser.addState([]() {
 	head.addAngle(ANGLE_HALF);
-	feet.addAngle(ANGLE_HALF);
+	feet.addAngle(ANGLE_HALF/2);
 });
 
 
@@ -178,8 +172,6 @@ void setup() {
 	_down->addTransition(&t_num, _sub);
 	_down->addTransition(&t_all, _pos);
 
-	_set->addTransition(&t_deg, _set);
-
 	_add->addTransition(&t_deg, _add);
 
 	_sub->addTransition(&t_deg, _sub);
@@ -246,6 +238,8 @@ void publish(String event, String data) {
 int executeCommand(String cmd) {
 	cmd.trim();
 	cmd.toLowerCase();
+
+	publish("bed/command", cmd);
 
 	joint = NULL;
 
