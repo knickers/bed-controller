@@ -2,15 +2,14 @@
 
 Voice control hospital bed inclination.
 
-Command syntax:
-
-`Digital assistant trigger` `IFTTT prefix` `command`
-
-IFTTT prefix: **move the bed**
+*Digital assistant trigger* **move the bed** command string
 
 *Hey Google, move the bed up 20 degrees*
+
 *Hey Google, move the bed legs up 10 degrees*
+
 *Hey Google, move the bed down*
+
 *Hey Google, move the bed up halfway*
 
 [Command Finite State Machine](https://github.com/knickers/bed-controller/raw/main/img/commands-fsm.png)
