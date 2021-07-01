@@ -12,7 +12,7 @@ Voice control hospital bed inclination.
 
 *Hey Google, move the bed up halfway*
 
-[Command Finite State Machine](https://github.com/knickers/bed-controller/raw/main/img/commands-fsm.png)
+![Command Finite State Machine](https://github.com/knickers/bed-controller/raw/main/img/commands-fsm.png)
 
 - Time-based angle estimation
 	- [x] Basic operation.
