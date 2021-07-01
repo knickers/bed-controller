@@ -1,25 +1,29 @@
-# Bed Controller
+# Voice controlled hospital bed inclination
 
-Voice control hospital bed inclination.
+This is a more advanced control program for the Particle Argon WIFI microcontroller used in [this Instructables hospital bed controller](https://www.instructables.com/Voice-Controlled-Hospital-Bed-by-Wifi/). Instead of using two IFTTT recipes (one for up and one for down,) this uses a single recipe and a state machine to parse a sudo-natural language command.
 
-*Digital assistant trigger* **move the bed** command string
+*Digital assistant trigger* **move the bed** *command string*
 
-*Hey Google, move the bed up 20 degrees*
+*Hey Google, move the bed up 20 degrees.*
 
-*Hey Google, move the bed legs up 10 degrees*
+*Hey Google, move the bed legs up 10 degrees.*
 
-*Hey Google, move the bed down*
+*Hey Google, move the bed down.*
 
-*Hey Google, move the bed up halfway*
+*Hey Google, move the bed up halfway.*
 
 ![Command Finite State Machine](https://github.com/knickers/bed-controller/raw/main/img/commands-fsm.png)
 
-- Time-based angle estimation
-	- [x] Basic operation.
-	- [ ] Account for actuator acceleration and deceleration time.
-- Measure DC current through pendant switches.
-	- [ ] Watch DC current to track actuator load and end-stops.
-	- [ ] Preload joint slop after detecting actuator end-stop.
-- Measure angle directly at bed joint.
-	- [x] Hall effect angle sensor.
-	- [ ] Calibrate sensor reading map to real angle.
+- [x] Parse commands
+	- [x] Use a single IFTTT recipe
+	- [x] String tokenizer
+	- [x] State machine command parser
+- [ ] Time-based angle estimation
+	- [x] Basic operation
+	- [ ] Account for actuator acceleration and deceleration time
+- [ ] Measure DC current through pendant switches
+	- [ ] Watch DC current to track actuator load and end-stops
+	- [ ] Preload joint slop after detecting actuator end-stop
+- [ ] Measure angle directly at bed joint
+	- [x] Hall effect angle sensor
+	- [ ] Calibrate sensor reading map to real angle
