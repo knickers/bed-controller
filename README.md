@@ -2,12 +2,25 @@
 
 Voice control hospital bed inclination.
 
-## TODO
+Command syntax:
 
-1. Account for actuator acceleration and deceleration time.
+`Digital assistant trigger` `IFTTT prefix` `command`
 
-## Features
+IFTTT prefix: **move the bed**
 
-1. Measure current through directional switches.
-1. Watch current to track endstops.
-1. Preload joint after detecting actuator endstop.
+*Hey Google, move the bed up 20 degrees*
+*Hey Google, move the bed legs up 10 degrees*
+*Hey Google, move the bed down*
+*Hey Google, move the bed up halfway*
+
+[Command Finite State Machine](https://github.com/knickers/bed-controller/raw/main/img/commands-fsm.png)
+
+- Time-based angle estimation
+	- [x] Basic operation.
+	- [ ] Account for actuator acceleration and deceleration time.
+- Measure DC current through pendant switches.
+	- [ ] Watch DC current to track actuator load and end-stops.
+	- [ ] Preload joint slop after detecting actuator end-stop.
+- Measure angle directly at bed joint.
+	- [x] Hall effect angle sensor.
+	- [ ] Calibrate sensor reading map to real angle.
