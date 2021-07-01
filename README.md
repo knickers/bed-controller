@@ -1,6 +1,8 @@
 # Voice controlled hospital bed inclination
 
-This is a more advanced control program for the Particle Argon WIFI microcontroller used in [this Instructables hospital bed controller](https://www.instructables.com/Voice-Controlled-Hospital-Bed-by-Wifi/). Instead of using two IFTTT recipes (one for up and one for down,) this uses a single recipe and a state machine to parse a sudo-natural language command.
+This is a more advanced control program for the Particle Argon WIFI microcontroller used in
+[this Instructables hospital bed controller](https://www.instructables.com/Voice-Controlled-Hospital-Bed-by-Wifi/).
+Instead of using multiple IFTTT recipes (one for up and one for down, for each joint,) this uses a single recipe, passing an entire command string to the Particle microcontroller. Then a state machine parses the sudo-natural language commands.
 
 *Digital assistant trigger* **move the bed** *command string*
 
