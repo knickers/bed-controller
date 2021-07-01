@@ -1,3 +1,5 @@
+// https://github.com/knickers/StateMachine
+
 #include "StateMachine.h"
 
 StateMachine::StateMachine() {

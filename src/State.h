@@ -1,3 +1,5 @@
+// https://github.com/knickers/StateMachine
+
 #include <LinkedList.h>
 
 #ifndef _STATE_H
