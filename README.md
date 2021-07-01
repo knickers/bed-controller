@@ -21,7 +21,7 @@ Instead of using multiple IFTTT recipes (one for up and one for down, for each j
 	- [x] String tokenizer
 	- [x] State machine command parser
 - [ ] Time-based angle estimation
-	- [x] Basic operation
+	- [x] Calculate duration from estimated actuator speed
 	- [ ] Account for actuator acceleration and deceleration time
 - [ ] Measure DC current through pendant switches
 	- [ ] Watch DC current to track actuator load and end-stops
