@@ -65,6 +65,10 @@ State* _pos = parser.addState([]() {
 	if (parser.executeOnce) {
 		token.remaining();
 		token.trimEnd("position");
+		token.trimEnd("up");
+		if (token.trimEnd("down")) {
+			dir = -1;
+		}
 	}
 });
 State* _err = parser.addState([]() {
