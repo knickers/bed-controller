@@ -129,9 +129,7 @@ bool t_deg()  {
 
 void setup() {
 	Particle.function("command", executeCommand);
-	Particle.function("headState", setHeadState);
 	Particle.function("headAngle", setHeadAngle);
-	Particle.function("feetState", setFeetState);
 	Particle.function("feetAngle", setFeetAngle);
 
 	pinMode(PIN_HEAD_UP, OUTPUT);
@@ -245,28 +243,22 @@ int executeCommand(String cmd) {
 	return 1;
 }
 
-int setHeadState(String state) {
-	if (Serial.isConnected()) {
-		Serial.printlnf("%d Set head state: %s", (int)Time.now(), state.c_str());
-	}
-	return head.setState(state);
-}
 int setHeadAngle(String angle) {
 	if (Serial.isConnected()) {
-		Serial.printlnf("%d Set head angle: %s", (int)Time.now(), angle.c_str());
+		Serial.printlnf("%s Set head angle: %s",
+			Time.format(TIME_FORMAT_ISO8601_FULL),
+			angle.c_str()
+		);
 	}
 	return head.addAngle(angle.toInt());
 }
 
-int setFeetState(String state) {
-	if (Serial.isConnected()) {
-		Serial.printlnf("%d Set feet state: %s", (int)Time.now(), state.c_str());
-	}
-	return feet.setState(state);
-}
 int setFeetAngle(String angle) {
 	if (Serial.isConnected()) {
-		Serial.printlnf("%d Set feet angle: %s", (int)Time.now(), angle.c_str());
+		Serial.printlnf("%s Set feet angle: %s",
+			Time.format(TIME_FORMAT_ISO8601_FULL),
+			angle.c_str()
+		);
 	}
 	return feet.addAngle(angle.toInt());
 }
