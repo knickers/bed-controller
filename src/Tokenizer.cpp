@@ -57,11 +57,13 @@ void Tokenizer::remaining() {
 	_token = _string.substring(_lastIdx);
 }
 
-void Tokenizer::trimEnd(String str) {
+bool Tokenizer::trimEnd(String str) {
 	if (_token.endsWith(str)) {
 		_token = _token.substring(0, _token.length()-str.length());
 		_token.trim();
+		return true;
 	}
+	return false;
 }
 
 bool Tokenizer::eq(String str) {

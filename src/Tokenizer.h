@@ -29,7 +29,7 @@ class Tokenizer {
 		void set(String str);
 		void next();
 		void remaining();
-		void trimEnd(String str);
+		bool trimEnd(String str);
 		bool eq(String str);
 		bool isNumeric();
 		float toFloat();
