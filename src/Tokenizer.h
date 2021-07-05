@@ -2,6 +2,7 @@
 #define Tokenizer_h
 
 #include "Particle.h"
+#define NUMBER_LIST_LENGTH 11
 
 class Tokenizer {
 	private:
@@ -10,7 +11,19 @@ class Tokenizer {
 		int _lastIdx;
 		String _string;
 		String _token;
-		String _numbers[10] = {"zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"};
+		String _numbers[NUMBER_LIST_LENGTH] = {
+			"zero",
+			"one",
+			"two",
+			"three",
+			"four",
+			"five",
+			"six",
+			"seven",
+			"eight",
+			"nine",
+			"ten"
+		};
 	public:
 		Tokenizer();
 		void set(String str);
