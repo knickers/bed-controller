@@ -189,7 +189,7 @@ void setup() {
 
 	_pos->addTransition(&t_all, _err);
 
-	Serial.begin(115200);
+	//Serial.begin(115200);
 }
 
 void loop() {
