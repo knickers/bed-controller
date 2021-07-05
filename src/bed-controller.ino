@@ -9,8 +9,8 @@
 #define PIN_FEET_DN 3
 
 #define ANGLE_UP   20
-#define ANGLE_HALF 30
-#define ANGLE_FULL 45
+#define ANGLE_HALF 35
+#define ANGLE_FULL 50
 #define ANGLE_MAX  60
 
 // Head bottom slop ~~ 2 sec ~~ 8 degrees
