@@ -18,6 +18,7 @@
 BedJoint  head(PIN_HEAD_UP, PIN_HEAD_DN);
 BedJoint  feet(PIN_FEET_UP, PIN_FEET_DN);
 BedJoint* joint;
+int8_t dir;
 
 StateMachine parser = StateMachine();
 
@@ -47,20 +48,15 @@ State* _up    = parser.addState([]() {
 State* _down = parser.addState([]() {
 	token.next();
 
+	dir = -1;
+
 	if (token.eq("")) {
 		joint->addAngle(-ANGLE_UP);
 	}
 });
 State* _add = parser.addState([]() {
 	if (parser.executeOnce) {
-		joint->addAngle(round(token.toFloat()));
-	}
-
-	token.next();
-});
-State* _sub = parser.addState([]() {
-	if (parser.executeOnce) {
-		joint->addAngle(round(token.toFloat()) * -1);
+		joint->addAngle(dir * round(token.toFloat()));
 	}
 
 	token.next();
@@ -88,12 +84,12 @@ State* p_half = parser.addState([]() { joint->addAngle(ANGLE_HALF); });
 State* p_full = parser.addState([]() { joint->addAngle(ANGLE_FULL); });
 State* p_off  = parser.addState([]() { head.turnOff(); feet.turnOff(); });
 State* p_alltheway = parser.addState([]() {
-	head.addAngle(ANGLE_FULL);
-	feet.addAngle(ANGLE_FULL/2);
+	head.addAngle(dir * ANGLE_FULL);
+	feet.addAngle(dir * ANGLE_FULL/2);
 });
 State* p_halfway = parser.addState([]() {
-	head.addAngle(ANGLE_HALF);
-	feet.addAngle(ANGLE_HALF/2);
+	head.addAngle(dir * ANGLE_HALF);
+	feet.addAngle(dir * ANGLE_HALF/2);
 });
 
 
@@ -169,12 +165,10 @@ void setup() {
 	_down->addTransition(&t_to,  _to);
 	_down->addTransition(&t_by,  _down);
 	_down->addTransition(&t_for, _for);
-	_down->addTransition(&t_num, _sub);
+	_down->addTransition(&t_num, _add);
 	_down->addTransition(&t_all, _pos);
 
 	_add->addTransition(&t_deg, _add);
-
-	_sub->addTransition(&t_deg, _sub);
 
 	// Named Positions
 	_pos->addTransition(&t_up, p_up);
@@ -242,6 +236,7 @@ int executeCommand(String cmd) {
 	publish("bed/command", cmd);
 
 	joint = NULL;
+	dir = 1;
 
 	token.set(cmd);
 
