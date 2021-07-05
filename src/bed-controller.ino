@@ -174,32 +174,12 @@ void setup() {
 
 	// Named Positions
 	_pos->addTransition(&t_up, p_up);
-	_pos->addTransition([]() { return token.eq("tv");          }, p_up);
-	_pos->addTransition([]() { return token.eq("tv watching"); }, p_up);
-	_pos->addTransition([]() { return token.eq("watching tv"); }, p_up);
-
 	_pos->addTransition(&t_down, p_down);
 	_pos->addTransition([]() { return token.eq("bottom"); }, p_down);
 
-	_pos->addTransition([]() { return token.eq("company");           }, p_half);
-	_pos->addTransition([]() { return token.eq("talking");           }, p_half);
-	_pos->addTransition([]() { return token.eq("eat");               }, p_half);
-	_pos->addTransition([]() { return token.eq("eating");            }, p_half);
-	_pos->addTransition([]() { return token.eq("teeth");             }, p_half);
-	_pos->addTransition([]() { return token.eq("brushing");          }, p_half);
-	_pos->addTransition([]() { return token.eq("teeth brushing");    }, p_half);
-	_pos->addTransition([]() { return token.eq("brush my teeth");    }, p_half);
-	_pos->addTransition([]() { return token.eq("brushing my teeth"); }, p_half);
-
-	_pos->addTransition([]() { return token.eq("lift");        }, p_alltheway);
-	_pos->addTransition([]() { return token.eq("lifting");     }, p_alltheway);
-	_pos->addTransition([]() { return token.eq("all the way"); }, p_alltheway);
-	_pos->addTransition([]() { return token.eq("all the way up");},p_alltheway);
-
 	_pos->addTransition([]() { return token.eq("halfway");     }, p_halfway);
 	_pos->addTransition([]() { return token.eq("half way");    }, p_halfway);
-	_pos->addTransition([]() { return token.eq("halfway up");  }, p_halfway);
-	_pos->addTransition([]() { return token.eq("half way up"); }, p_halfway);
+	_pos->addTransition([]() { return token.eq("all the way"); }, p_alltheway);
 
 	_pos->addTransition([]() { return token.eq("");       }, p_off);
 	_pos->addTransition([]() { return token.eq("now");    }, p_off);
