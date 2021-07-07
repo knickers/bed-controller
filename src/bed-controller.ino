@@ -29,23 +29,23 @@ void nextToken() { token.next(); }
 /**************************** States *******************************/
 /*******************************************************************/
 
-State* _start = parser.addState(&nextToken);
-State* _for   = parser.addState(&nextToken);
-State* _to    = parser.addState([]() {
+State* s_start = parser.addState(&nextToken);
+State* s_for   = parser.addState(&nextToken);
+State* s_to    = parser.addState([]() {
 	token.next();
 
 	if (token.eq("") || token.eq("degrees")) {
 		joint->addAngle(2);
 	}
 });
-State* _up    = parser.addState([]() {
+State* s_up    = parser.addState([]() {
 	token.next();
 
 	if (token.eq("")) {
 		joint->addAngle(ANGLE_UP);
 	}
 });
-State* _down = parser.addState([]() {
+State* s_down = parser.addState([]() {
 	token.next();
 
 	dir = -1;
@@ -54,14 +54,14 @@ State* _down = parser.addState([]() {
 		joint->addAngle(-ANGLE_UP);
 	}
 });
-State* _add = parser.addState([]() {
+State* s_add = parser.addState([]() {
 	if (parser.executeOnce) {
 		joint->addAngle(dir * round(token.toFloat()));
 	}
 
 	token.next();
 });
-State* _pos = parser.addState([]() {
+State* s_pos = parser.addState([]() {
 	if (parser.executeOnce) {
 		token.remaining();
 		token.trimEnd("position");
@@ -71,7 +71,7 @@ State* _pos = parser.addState([]() {
 		}
 	}
 });
-State* _err = parser.addState([]() {
+State* s_err = parser.addState([]() {
 	head.turnOff();
 	feet.turnOff();
 	publish("bed/error", "Invalid named position: '" + token.val() + "'");
@@ -142,52 +142,52 @@ void setup() {
 	pinMode(PIN_FEET_DN, OUTPUT);
 
 	// StateMachine Transitions
-	_start->addTransition(&t_feet, _start);
-	_start->addTransition(&t_head, _start);
-	_start->addTransition(&t_to,   _to);
-	_start->addTransition(&t_for,  _for);
-	_start->addTransition(&t_up,   _up);
-	_start->addTransition(&t_down, _down);
-	_start->addTransition(&t_all,  _pos);
-	_start->addTransition([]() { return token.eq(""); }, p_off);
+	s_start->addTransition(&t_feet, s_start);
+	s_start->addTransition(&t_head, s_start);
+	s_start->addTransition(&t_to,   s_to);
+	s_start->addTransition(&t_for,  s_for);
+	s_start->addTransition(&t_up,   s_up);
+	s_start->addTransition(&t_down, s_down);
+	s_start->addTransition(&t_all,  s_pos);
+	s_start->addTransition([]() { return token.eq(""); }, p_off);
 
-	_to->addTransition(&t_the, _to);
-	_to->addTransition(&t_num, _add);
-	_to->addTransition(&t_all, _pos);
+	s_to->addTransition(&t_the, s_to);
+	s_to->addTransition(&t_num, s_add);
+	s_to->addTransition(&t_all, s_pos);
 
-	_for->addTransition(&t_the, _for);
-	_for->addTransition(&t_all, _pos);
+	s_for->addTransition(&t_the, s_for);
+	s_for->addTransition(&t_all, s_pos);
 
-	_up->addTransition(&t_to,  _to);
-	_up->addTransition(&t_by,  _up);
-	_up->addTransition(&t_for, _for);
-	_up->addTransition(&t_num, _add);
-	_up->addTransition(&t_all, _pos);
+	s_up->addTransition(&t_to,  s_to);
+	s_up->addTransition(&t_by,  s_up);
+	s_up->addTransition(&t_for, s_for);
+	s_up->addTransition(&t_num, s_add);
+	s_up->addTransition(&t_all, s_pos);
 
-	_down->addTransition(&t_to,  _to);
-	_down->addTransition(&t_by,  _down);
-	_down->addTransition(&t_for, _for);
-	_down->addTransition(&t_num, _add);
-	_down->addTransition(&t_all, _pos);
+	s_down->addTransition(&t_to,  s_to);
+	s_down->addTransition(&t_by,  s_down);
+	s_down->addTransition(&t_for, s_for);
+	s_down->addTransition(&t_num, s_add);
+	s_down->addTransition(&t_all, s_pos);
 
-	_add->addTransition(&t_deg, _add);
+	s_add->addTransition(&t_deg, s_add);
 
 	// Named Positions
-	_pos->addTransition(&t_up, p_up);
-	_pos->addTransition(&t_down, p_down);
-	_pos->addTransition([]() { return token.eq("bottom"); }, p_down);
+	s_pos->addTransition(&t_up, p_up);
+	s_pos->addTransition(&t_down, p_down);
+	s_pos->addTransition([]() { return token.eq("bottom"); }, p_down);
 
-	_pos->addTransition([]() { return token.eq("halfway");     }, p_halfway);
-	_pos->addTransition([]() { return token.eq("half way");    }, p_halfway);
-	_pos->addTransition([]() { return token.eq("all the way"); }, p_alltheway);
+	s_pos->addTransition([]() { return token.eq("halfway");     }, p_halfway);
+	s_pos->addTransition([]() { return token.eq("half way");    }, p_halfway);
+	s_pos->addTransition([]() { return token.eq("all the way"); }, p_alltheway);
 
-	_pos->addTransition([]() { return token.eq("");       }, p_off);
-	_pos->addTransition([]() { return token.eq("now");    }, p_off);
-	_pos->addTransition([]() { return token.eq("off");    }, p_off);
-	_pos->addTransition([]() { return token.eq("stop");   }, p_off);
-	_pos->addTransition([]() { return token.eq("cancel"); }, p_off);
+	s_pos->addTransition([]() { return token.eq("");       }, p_off);
+	s_pos->addTransition([]() { return token.eq("now");    }, p_off);
+	s_pos->addTransition([]() { return token.eq("off");    }, p_off);
+	s_pos->addTransition([]() { return token.eq("stop");   }, p_off);
+	s_pos->addTransition([]() { return token.eq("cancel"); }, p_off);
 
-	_pos->addTransition(&t_all, _err);
+	s_pos->addTransition(&t_all, s_err);
 
 	//Serial.begin(115200);
 }
