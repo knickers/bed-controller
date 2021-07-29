@@ -14,7 +14,20 @@ Instead of using multiple IFTTT recipes (one for up and one for down, for each j
 
 *Hey Google, move the bed up halfway.*
 
+*Hey Google, stop the bed now.*
+
 ![Command Finite State Machine](https://github.com/knickers/bed-controller/raw/main/img/commands-fsm.png)
+
+## Named positions
+
+- halfway
+	- Move head by 35 degrees
+	- Move feet by 17 degrees
+- all the way
+	- Move head by 50 degrees
+	- Move feet by 25 degrees
+
+## Tasks
 
 - [x] Parse commands
 	- [x] Use a single IFTTT recipe
