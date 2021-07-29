@@ -19,13 +19,16 @@ class BedJoint {
 		uint64_t _rampUp;       // Milliseconds to ramp up to full speed
 		uint64_t _rampDown;     // Milliseconds to coast down to stop
 		uint64_t _millisAngle;  // Milliseconds per angle in degrees
-		STATE _state;
+		uint64_t _waitTill;     // Milliseconds to wait before starting
+		int      _waitAngle;    // Angle to achieve after waiting
+		STATE    _state;
 	public:
 		BedJoint(int upPin, int downPin);
-		void  turnOff();
-		void  update();
-		STATE addAngle(int angle);
-		STATE setState(String state);
+		void turnOff();
+		void update();
+		void addAngle(int angle);
+		void addDelay(int angle, uint32_t delay);
+		STATE getState();
 };
 
 #endif

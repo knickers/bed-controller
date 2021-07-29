@@ -89,11 +89,11 @@ State* p_full = parser.addState([]() { joint->addAngle(ANGLE_FULL); });
 State* p_off  = parser.addState([]() { head.turnOff(); feet.turnOff(); });
 State* p_alltheway = parser.addState([]() {
 	head.addAngle(dir * ANGLE_FULL);
-	feet.addAngle(dir * ANGLE_FULL/2);
+	feet.addDelay(dir * ANGLE_FULL/2, 500);
 });
 State* p_halfway = parser.addState([]() {
 	head.addAngle(dir * ANGLE_HALF);
-	feet.addAngle(dir * ANGLE_HALF/2);
+	feet.addDelay(dir * ANGLE_HALF/2, 500);
 });
 
 
@@ -118,7 +118,7 @@ bool t_head() {
 	}
 	return ok;
 }
-bool t_to()   { return token.eq("to"); }
+bool t_to()   { return token.eq("to") || token.eq("too"); }
 bool t_for()  { return token.eq("for"); }
 bool t_up()   { return token.eq("up") || token.eq("of"); }
 bool t_down() { return token.eq("down"); }
@@ -230,19 +230,21 @@ int executeCommand(String cmd) {
 int setHeadAngle(String angle) {
 	if (Serial.isConnected()) {
 		Serial.printlnf("%s Set head angle: %s",
-			Time.format(TIME_FORMAT_ISO8601_FULL),
+			Time.format(TIME_FORMAT_ISO8601_FULL).c_str(),
 			angle.c_str()
 		);
 	}
-	return head.addAngle(angle.toInt());
+	head.addAngle(angle.toInt());
+	return head.getState();
 }
 
 int setFeetAngle(String angle) {
 	if (Serial.isConnected()) {
 		Serial.printlnf("%s Set feet angle: %s",
-			Time.format(TIME_FORMAT_ISO8601_FULL),
+			Time.format(TIME_FORMAT_ISO8601_FULL).c_str(),
 			angle.c_str()
 		);
 	}
-	return feet.addAngle(angle.toInt());
+	feet.addAngle(angle.toInt());
+	return feet.getState();
 }
